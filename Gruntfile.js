@@ -10,7 +10,7 @@ module.exports = function (grunt)
                 options: {
                     livereload: '<%= connect.options.livereload %>'
                 }
-            ,   files: ['index.html']
+            ,   files: ['index.html', 'styles.css', 'scripts.js']
             }
         }
     ,   connect: {

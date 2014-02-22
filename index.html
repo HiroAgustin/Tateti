@@ -1,143 +1,44 @@
-<title>Ta Te Ti</title>
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<style>
-    * {
-        box-sizing: border-box;
-    }
+    <title>Ta Te Ti</title>
 
-    html {
-        font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
-    }
+    <meta name="description" content="Simple game of Tic Tac Toe">
+    <meta name="viewport" content="width=device-width">
 
-    h1 {
-        color: #0074D9;
-    }
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 class="text-center">Ta Te Ti</h1>
 
-    h2 {
-        color: #111;
-    }
+    <h2 class="text-center">Player <span id="js-player-indicator" class="player-1">1</span>, your turn.</h2>
 
-    a {
-        color: #0074D9;
-        border-bottom: 1px solid #0074D9;
-        text-decoration: none;
-    }
+    <div id="js-board" class="board">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
 
-    a:hover {
-        border-bottom: none;
-    }
+    <p class="text-center"><a href="/">Restart</a></p>
 
-    .text-center {
-        text-align: center;
-    }
-
-    .player-1 {
-        color: #FF4136;
-    }
-
-    .player-2 {
-        color: #2ECC40;
-    }
-
-    .board {
-        height: 600px;
-        margin: 0 auto;
-        width: 600px;
-    }
-
-    .board .player-1::after {
-        content: 'x';
-        display: block;
-    }
-
-    .board .player-2::after {
-        content: 'o';
-        display: block;
-    }
-
-    .cell {
-        border: 1px solid #aaa;
-        cursor: pointer;
-        float: left;
-        font-size: 6em;
-        line-height: 2em;
-        height: 200px;
-        margin: -1px 0 0 -1px;
-        text-align: center;
-        width: 200px;
-    }
-</style>
-
-<h1 class="text-center">Ta Te Ti</h1>
-
-<h2 class="text-center">Player <span id="js-player-indicator" class="player-1">1</span>, your turn.</h2>
-
-<div id="js-board" class="board">
-    <div class="cell"></div>
-    <div class="cell"></div>
-    <div class="cell"></div>
-    <div class="cell"></div>
-    <div class="cell"></div>
-    <div class="cell"></div>
-    <div class="cell"></div>
-    <div class="cell"></div>
-    <div class="cell"></div>
-</div>
-
-<p class="text-center"><a href="/">Restart</a></p>
-
-<script>
-    (function (win, doc, undefined)
-    {
-        var game = {
-                board: doc.getElementById('js-board')
-            ,   indicator: doc.getElementById('js-player-indicator')
-            ,   playerOne: true
-            ,   init: function ()
-                {
-                    var self = this;
-
-                    this.board.addEventListener('click', function (e)
-                    {
-                        !self.isSelected(e.target) && self.select(e.target);
-                    });
-                }
-
-            ,   isSelected: function (element)
-                {
-                    return element.classList.contains('selected');
-                }
-
-            ,   isGameOver: function ()
-                {
-                    return false;
-                }
-
-            ,   getPlayerId: function ()
-                {
-                    return this.playerOne ? '1' : '2';
-                }
-
-            ,   togglePlayer: function ()
-                {
-                    this.playerOne = !this.playerOne;
-                    this.indicator.innerHTML = this.getPlayerId();
-                    this.indicator.classList.toggle('player-2');
-                }
-
-            ,   select: function (element)
-                {
-                    element.classList.add('selected');
-                    element.classList.add('player-' + this.getPlayerId());
-
-                    if (!this.isGameOver())
-                        this.togglePlayer();
-
-                    return this;
-                }
-            };
-
-        game.init();
-
-    })(window, document);
-</script>
+    <script src="scripts.js"></script>
+    
+    <!-- <script>
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='//www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create','UA-XXXXX-X');ga('send','pageview');
+    </script> -->
+</body>
+</html>
