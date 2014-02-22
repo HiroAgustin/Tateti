@@ -1,7 +1,7 @@
 {
   "name": "Tateti",
   "version": "0.0.0",
-  "description": "Hacker School Me!",
+  "description": "Simple game of Tic Tac Toe",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
