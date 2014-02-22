@@ -27,5 +27,6 @@ module.exports = function (grunt)
         }
     });
 
-    grunt.registerTask('default', ['connect', 'watch']);
+    grunt.registerTask('serve', ['connect', 'watch']);
+    grunt.registerTask('default', ['serve']);
 };
