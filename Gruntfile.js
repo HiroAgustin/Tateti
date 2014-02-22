@@ -22,11 +22,10 @@ module.exports = function (grunt)
         ,   livereload: {
                 options: {
                     open: true
-                // ,   base: ['../']
                 }
             }
         }
     });
 
-    grunt.registerTask('default', ['connect:livereload', 'watch']);
+    grunt.registerTask('default', ['connect', 'watch']);
 };
