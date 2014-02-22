@@ -1,0 +1,30 @@
+{
+  "name": "Tateti",
+  "version": "0.0.0",
+  "description": "Hacker School Me!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HiroAgustin/Tateti.git"
+  },
+  "keywords": [
+    "Tic",
+    "Tac",
+    "Toe"
+  ],
+  "author": "HiroAgustin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HiroAgustin/Tateti/issues"
+  },
+  "homepage": "https://github.com/HiroAgustin/Tateti",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-connect": "~0.7.0",
+    "load-grunt-tasks": "~0.3.0"
+  }
+}

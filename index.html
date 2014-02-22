@@ -1,0 +1,133 @@
+<title>Ta Te Ti</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        font-family: 'Helvetica neue', Helvetica, sans-serif;
+    }
+
+    h1 {
+        color: #0074D9;
+    }
+
+    h2 {
+        color: #111;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .board {
+        height: 600px;
+        margin: 0 auto;
+        width: 600px;
+    }
+
+    .cell {
+        border: 1px solid #aaa;
+        cursor: pointer;
+        float: left;
+        font-size: 6em;
+        line-height: 2em;
+        height: 200px;
+        margin: -1px 0 0 -1px;
+        text-align: center;
+        width: 200px;
+    }
+
+    .player-1 {
+        color: #FF4136;
+    }
+
+    .player-2 {
+        color: #2ECC40;
+    }
+
+    .cell.player-1::after {
+        content: 'x';
+        display: block;
+    }
+
+    .cell.player-2::after {
+        content: 'o';
+        display: block;
+    }
+</style>
+
+<h1 class="text-center">Ta Te Ti</h1>
+
+<h2 class="text-center">Player <span id="js-player-indicator" class="player-1">1</span>, your turn.</h2>
+
+<div id="js-board" class="board">
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+</div>
+
+<p class="text-center"><a href="/">Restart</a></p>
+
+<script>
+    (function (win, doc, undefined)
+    {
+        var game = {
+                board: doc.getElementById('js-board')
+            ,   indicator: doc.getElementById('js-player-indicator')
+            ,   playerOne: true
+            ,   init: function ()
+                {
+                    var self = this;
+
+                    this.board.addEventListener('click', function (e)
+                    {
+                        !self.isSelected(e.target) && self.select(e.target);
+                    });
+                }
+
+            ,   isSelected: function (element)
+                {
+                    return element.classList.contains('selected');
+                }
+
+            ,   isGameOver: function ()
+                {
+                    return false;
+                }
+
+            ,   getPlayerId: function ()
+                {
+                    return this.playerOne ? '1' : '2';
+                }
+
+            ,   togglePlayer: function ()
+                {
+                    this.playerOne = !this.playerOne;
+                    this.indicator.innerHTML = this.getPlayerId();
+                    this.indicator.classList.toggle('player-2');
+                }
+
+            ,   select: function (element)
+                {
+                    element.classList.add('selected');
+                    element.classList.add('player-' + this.getPlayerId());
+
+                    if (!this.isGameOver())
+                        this.togglePlayer();
+
+                    return this;
+                }
+            };
+
+        game.init();
+
+    })(window, document);
+</script>
