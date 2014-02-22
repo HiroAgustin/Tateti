@@ -15,6 +15,10 @@ h2 {
     color: #111;
 }
 
+b {
+    color: #FFDC00;
+}
+
 a {
     color: #0074D9;
     border-bottom: 1px solid #0074D9;
@@ -45,15 +49,13 @@ a:hover {
 
 .board .player-1::after {
     content: 'x';
-    display: block;
 }
 
 .board .player-2::after {
     content: 'o';
-    display: block;
 }
 
-.cell {
+.tile {
     border: 1px solid #aaa;
     cursor: pointer;
     float: left;
@@ -63,4 +65,8 @@ a:hover {
     margin: -1px 0 0 -1px;
     text-align: center;
     width: 200px;
+}
+
+.tile::after {
+    display: block;
 }
