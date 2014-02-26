@@ -90,23 +90,64 @@
 
         ,   hasPlayerWon: function ()
             {
-                var tiles = this.board.getElementsByClassName('player-' + this.getPlayerId());
+                this.playerTiles = this.board.getElementsByClassName('player-' + this.getPlayerId());
 
-                return tiles.length >= 3 && (this.haveThree(tiles, 'row') || this.haveThree(tiles, 'column'));
+                return this.playerTiles.length >= 3 && (
+                    this.hasThreeInRow() || this.hasThreeInColumn() || 
+                    this.hasLeftDiagonal() || this.hasRightDiagonal()
+                );
             }
 
-        ,   haveThree: function (tiles, data)
+        ,   hasThreeInRow: function ()
+            {
+                return this.hasThreeStraight('row');
+            }
+
+        ,   hasThreeInColumn: function ()
+            {
+                return this.hasThreeStraight('column');
+            }
+
+        ,   hasLeftDiagonal: function ()
+            {
+                return this.hasCenterTile() && this.hasTile(0, 0) && this.hasTile(2, 2);
+            }
+
+        ,   hasRightDiagonal: function ()
+            {
+                return this.hasCenterTile() && this.hasTile(0, 2) && this.hasTile(2, 0);
+            }
+
+        ,   hasCenterTile: function ()
+            {
+                return this.hasTile(1, 1);
+            }
+
+        ,   hasThreeStraight: function (data)
             {
                 var valid = false
                 ,   grouped = {};
 
-                forEach(tiles, function (element)
+                forEach(this.playerTiles, function (element)
                 {
                     grouped[element.dataset[data]] = ++grouped[element.dataset[data]] || 1;
                 });
 
                 for (attr in grouped)
                     valid = valid || grouped[attr] === 3;
+
+                return valid;
+            }
+
+        ,   hasTile: function (row, column)
+            {
+                var valid = false;
+
+                forEach(this.playerTiles, function (element)
+                {
+                    if (element.dataset.row == row && element.dataset.column == column)
+                        valid = true;
+                });
 
                 return valid;
             }
