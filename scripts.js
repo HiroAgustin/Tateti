@@ -128,7 +128,8 @@
         ,   hasThreeStraight: function (data)
             {
                 var valid = false
-                ,   grouped = {};
+                ,   grouped = {}
+                ,   attr = null;
 
                 forEach(this.playerTiles, function (element)
                 {
