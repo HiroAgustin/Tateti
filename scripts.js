@@ -2,35 +2,59 @@
 {
     'use strict';
     
-    function forEach(list, iterator)
-    {
-        return Array.prototype.forEach.call(list, iterator);
-    }
-
     var game = {
 
-            init: function ()
+            init: function (options)
             {
+                this.size = options.size;
                 this.isPlayerOne = true;
-                return this.mapDom().tagTiles().addListeners();
+
+                return this.mapDom().generateBoard().addListeners();
+            }
+
+        ,   $: function (id)
+            {
+                return doc.getElementById(id)
+            }
+
+        ,   forEach: function (list, iterator)
+            {
+                return Array.prototype.forEach.call(list, iterator);
             }
 
         ,   mapDom: function ()
             {
-                this.board = doc.getElementById('js-board')
-                this.marker = doc.getElementById('js-marker')
-                this.indicator = doc.getElementById('js-player-indicator')
+                this.board = this.$('js-board')
+                this.marker = this.$('js-marker')
+                this.indicator = this.$('js-player-indicator')
 
                 return this;
             }
 
-        ,   tagTiles: function ()
+        ,   generateBoard: function ()
             {
-                forEach(this.board.children, function (element, index)
+                var size = this.size
+                ,   element = null
+                ,   i = 0
+                ,   j = 0;
+
+                for (i = 0; i < size; i++)
                 {
-                    element.dataset.row = parseInt(index / 3);
-                    element.dataset.column = index % 3;
-                });
+                    for (j = 0; j < size; j++)
+                    {
+                        element = doc.createElement('div');
+
+                        element.classList.add('tile');
+
+                        element.dataset.row = i;
+                        element.dataset.column = j;
+
+                        this.board.appendChild(element);
+                    }
+                }
+
+                this.board.style.width = 200 * size + 'px';
+                this.board.style.height = 200 * size + 'px';
 
                 return this;
             }
@@ -94,50 +118,64 @@
             {
                 this.playerTiles = this.board.getElementsByClassName('player-' + this.getPlayerId());
 
-                return this.playerTiles.length >= 3 && (
-                    this.hasThreeInRow() || this.hasThreeInColumn() || 
+                return this.playerTiles.length >= this.size && (
+                    this.hasRow() || this.hasColumn() || 
                     this.hasLeftDiagonal() || this.hasRightDiagonal()
                 );
             }
 
-        ,   hasThreeInRow: function ()
+        ,   hasRow: function ()
             {
-                return this.hasThreeStraight('row');
+                return this.hasStraight('row');
             }
 
-        ,   hasThreeInColumn: function ()
+        ,   hasColumn: function ()
             {
-                return this.hasThreeStraight('column');
+                return this.hasStraight('column');
             }
 
         ,   hasLeftDiagonal: function ()
             {
-                return this.hasCenterTile() && this.hasTile(0, 0) && this.hasTile(2, 2);
+                var valid = true
+                ,   size = this.size
+                ,   i = 0;
+
+                for (i = 0; i < size; i++)
+                {
+                    valid = valid && this.hasTile(i, i);
+                }
+
+                return valid;
             }
 
         ,   hasRightDiagonal: function ()
             {
-                return this.hasCenterTile() && this.hasTile(0, 2) && this.hasTile(2, 0);
+                var valid = true
+                ,   size = this.size
+                ,   i = 0;
+
+                for (i = 0; i < size; i++)
+                {
+                    valid = valid && this.hasTile(i, size - i - 1);
+                }
+
+                return valid;
             }
 
-        ,   hasCenterTile: function ()
-            {
-                return this.hasTile(1, 1);
-            }
-
-        ,   hasThreeStraight: function (data)
+        ,   hasStraight: function (data)
             {
                 var valid = false
                 ,   grouped = {}
-                ,   attr = null;
+                ,   attr = null
+                ,   size = this.size;
 
-                forEach(this.playerTiles, function (element)
+                this.forEach(this.playerTiles, function (element)
                 {
                     grouped[element.dataset[data]] = ++grouped[element.dataset[data]] || 1;
                 });
 
                 for (attr in grouped)
-                    valid = valid || grouped[attr] === 3;
+                    valid = valid || grouped[attr] === size;
 
                 return valid;
             }
@@ -146,7 +184,7 @@
             {
                 var valid = false;
 
-                forEach(this.playerTiles, function (element)
+                this.forEach(this.playerTiles, function (element)
                 {
                     if (element.dataset.row == row && element.dataset.column == column)
                         valid = true;
@@ -166,6 +204,8 @@
             }
         };
 
-    game.init();
+    game.init({
+        size: 3
+    });
 
 })(window, document);

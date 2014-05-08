@@ -41,9 +41,7 @@ a:hover {
 }
 
 .board {
-    height: 600px;
     margin: 0 auto;
-    width: 600px;
 }
 
 .board .player-1::after {
