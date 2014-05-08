@@ -1,5 +1,7 @@
 (function (win, doc, undefined)
 {
+    'use strict';
+    
     function forEach(list, iterator)
     {
         return Array.prototype.forEach.call(list, iterator);

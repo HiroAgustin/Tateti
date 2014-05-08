@@ -2,10 +2,6 @@
   "name": "Tateti",
   "version": "0.0.0",
   "description": "Simple game of Tic Tac Toe",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/HiroAgustin/Tateti.git"
