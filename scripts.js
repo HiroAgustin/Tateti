@@ -6,6 +6,8 @@
 
             init: function (options)
             {
+                this.socket = io();
+
                 this.size = options.size;
                 this.isPlayerOne = true;
 
