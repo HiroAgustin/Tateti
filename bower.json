@@ -1,0 +1,21 @@
+{
+  "name": "y",
+  "main": "y",
+  "version": "y",
+  "homepage": "https://github.com/HiroAgustin/Tateti",
+  "authors": [
+    "HiroAgustin <hiroagustin@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "socket.io-client": "~1.0.6"
+  }
+}

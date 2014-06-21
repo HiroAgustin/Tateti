@@ -20,6 +20,18 @@
 
     <p class="text-center"><a href="/">Restart</a></p>
 
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="../bower_components/socket.io-client/socket.io.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({app,.tmp}) scripts/scripts.js -->
     <script src="scripts.js"></script>
+    <!-- endbuild -->
+
+    <script>
+        window.socket = io();
+    </script>
 </body>
 </html>
