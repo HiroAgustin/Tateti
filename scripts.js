@@ -9,14 +9,13 @@
                 this.socket = io();
 
                 this.size = options.size;
-                this.isPlayerOne = true;
 
-                return this.mapDom().generateBoard().addListeners();
+                return this.mapDom().addListeners();
             }
 
-        ,   $: function (id)
+        ,   $: function (selector)
             {
-                return doc.getElementById(id)
+                return doc.querySelectorAll(selector);
             }
 
         ,   forEach: function (list, iterator)
@@ -26,11 +25,39 @@
 
         ,   mapDom: function ()
             {
-                this.board = this.$('js-board')
-                this.marker = this.$('js-marker')
-                this.indicator = this.$('js-player-indicator')
+                this.board = this.$('#js-board')[0];
+                this.status = this.$('#js-status')[0];
 
                 return this;
+            }
+
+        ,   addListeners: function ()
+            {
+                this.board.addEventListener('click', this.clickHandler.bind(this));
+
+                this.socket
+                    .on('ready', this.ready.bind(this))
+                    .on('setPlayerNumber', this.setPlayerNumber.bind(this))
+                    .on('otherPlayerSelected', this.otherPlayerSelected.bind(this));
+
+                return this;
+            }
+
+        ,   clickHandler: function (e)
+            {
+                if (!this.isGameOver(this.id) && this.isMyTurn && !this.isSelected(e.target))
+                    this.select(e.target);
+            }
+
+        ,   ready: function ()
+            {
+                var id = this.id;
+
+                this.isMyTurn = id === 1;
+
+                this.updateStatus();
+
+                return this.generateBoard();
             }
 
         ,   generateBoard: function ()
@@ -61,15 +88,9 @@
                 return this;
             }
 
-        ,   addListeners: function ()
+        ,   setPlayerNumber: function (number)
             {
-                var self = this;
-
-                this.board.addEventListener('click', function (e)
-                {
-                    if (!self.winner && !self.isSelected(e.target))
-                        self.select(e.target);
-                });
+                this.id = number;
 
                 return this;
             }
@@ -79,17 +100,29 @@
                 return element.classList.contains('selected');
             }
 
-        ,   getPlayerId: function ()
+        ,   otherPlayerSelected: function (data)
             {
-                return this.isPlayerOne ? '1' : '2';
+                var element = this.$('[data-row="' + data.row + '"][data-column="' + data.column + '"]')[0];
+
+                element.classList.add('selected');
+                element.classList.add('player-' + data.playerId);
+
+                if (!this.isGameOver(data.playerId))
+                    this.togglePlayer();
+                else
+                    this.setStatus('You lose bitch!');
+
+                return this;
             }
 
         ,   select: function (element)
             {
                 element.classList.add('selected');
-                element.classList.add('player-' + this.getPlayerId());
+                element.classList.add('player-' + this.id);
 
-                if (!this.isGameOver())
+                this.socket.emit('select', element.dataset);
+
+                if (!this.isGameOver(this.id))
                     this.togglePlayer();
                 else
                     this.celebrate();
@@ -99,26 +132,34 @@
 
         ,   togglePlayer: function ()
             {
-                this.isPlayerOne = !this.isPlayerOne;
-                this.indicator.innerHTML = this.getPlayerId();
-                this.indicator.classList.toggle('player-2');
+                this.isMyTurn = !this.isMyTurn;
+                this.updateStatus();
 
                 return this;
             }
 
-        ,   isGameOver: function ()
+        ,   updateStatus: function ()
             {
-                if (this.hasPlayerWon())
-                    return (this.winner = this.getPlayerId());
-                else if (!this.board.querySelectorAll(':not(.selected)').length)
+                var id = this.id;
+
+                this.setStatus('Soy el <span class="player-' + id + '">' + id + '</span> y ' + (!this.isMyTurn ? 'no ' : '') + 'es mi turno');
+
+                return this;
+            }
+
+        ,   isGameOver: function (id)
+            {
+                if (this.hasPlayerWon(id))
+                    return (this.winner = id);
+                else if (!this.$(':not(.selected)').length)
                     return true;
 
                 return false;
             }
 
-        ,   hasPlayerWon: function ()
+        ,   hasPlayerWon: function (id)
             {
-                this.playerTiles = this.board.getElementsByClassName('player-' + this.getPlayerId());
+                this.playerTiles = this.board.getElementsByClassName('player-' + id);
 
                 return this.playerTiles.length >= this.size && (
                     this.hasRow() || this.hasColumn() || 
@@ -138,8 +179,8 @@
 
         ,   hasLeftDiagonal: function ()
             {
-                var valid = true
-                ,   size = this.size
+                var size = this.size
+                ,   valid = true
                 ,   i = 0;
 
                 for (i = 0; i < size; i++)
@@ -195,12 +236,19 @@
                 return valid;
             }
 
+        ,   setStatus: function (text)
+            {
+                this.status.innerHTML = text;
+
+                return this;
+            }
+
         ,   celebrate: function ()
             {
                 if (this.winner)
-                    this.marker.innerHTML = 'Congrats Player <b class="player-' + this.winner + '">' + this.winner + ' ☺</b>';
+                    this.setStatus('Congrats Player <b class="player-' + this.winner + '">' + this.winner + ' ☺</b>');
                 else
-                    this.marker.innerHTML = 'It\'s a tie <b>☹</b>';
+                    this.setStatus('It\'s a tie <b>☹</b>');
 
                 return this;
             }

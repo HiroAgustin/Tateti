@@ -5,29 +5,31 @@ var express = require('express')
 ,   io = require('socket.io')(http)
 
 ,   bodyParser = require('body-parser')
-,   compression = require('compression');
+,   compression = require('compression')
+
+,   Game = require('./lib/game')
+,   current = null
+,   counter = 0;
 
 app.use(compression());
+
 app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + '/../'));
 
 io.on('connection', function (socket)
 {
-    console.log('a user connected');
-
-    socket
-        .on('disconnect', function ()
-        {
-            console.log('user disconnected');
-        })
-        .on('chat', function (msg)
-        {
-            console.log(msg);
+    if (!current || current.isFull())
+        current = new Game({
+            id: counter++
+        ,   server: io
         });
+
+    current.addPlayer(socket);
 });
 
 http.listen(process.env.PORT || 8080);
