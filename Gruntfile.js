@@ -301,6 +301,7 @@ module.exports = function (grunt)
 					,	src: [
 							'package.json'
 						,	'server/**/*'
+						,	'Procfile'
 						]
 					}
 				]
