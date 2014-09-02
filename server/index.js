@@ -1,8 +1,13 @@
+'use strict';
+
+// Set default node environment to development
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 var express = require('express')
 ,   app = module.exports = express()
 
-,   http = require('http').Server(app)
-,   io = require('socket.io')(http)
+,   server = require('http').Server(app)
+,   io = require('socket.io')(server)
 
 ,   bodyParser = require('body-parser')
 ,   compression = require('compression')
@@ -11,15 +16,7 @@ var express = require('express')
 ,   current = null
 ,   counter = 0;
 
-app.use(compression());
-
-app.use(bodyParser.json());
-
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
-app.use(express.static(__dirname + '/../'));
+require('./config')(app);
 
 io.on('connection', function (socket)
 {
@@ -32,4 +29,4 @@ io.on('connection', function (socket)
     current.addPlayer(socket);
 });
 
-http.listen(process.env.PORT || 8080);
+server.listen(process.env.PORT || 8080);

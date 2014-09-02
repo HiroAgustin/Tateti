@@ -1,0 +1,34 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<title>Ta Te Ti</title>
+
+<meta name="description" content="Simple game of Tic Tac Toe">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Raleway:300">
+
+<!-- build:css styles/vendor.css -->
+<!-- bower:css -->
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:css({client,.tmp}) styles/main.css -->
+<link rel="stylesheet" href="styles/styles.css">
+<!-- endbuild -->
+
+<h1 class="text-center">Ta Te Ti</h1>
+
+<h2 id="js-status" class="text-center">Waiting for oponent</h2>
+
+<div id="js-board" class="board"></div>
+
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/socket.io-client/socket.io.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js({client,.tmp}) scripts/main.js -->
+<script src="scripts/game.js"></script>
+<!-- endbuild -->
