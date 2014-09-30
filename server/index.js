@@ -9,14 +9,18 @@ var express = require('express')
 ,   server = require('http').Server(app)
 ,   io = require('socket.io')(server)
 
-,   bodyParser = require('body-parser')
-,   compression = require('compression')
+// ,   bodyParser = require('body-parser')
+// ,   compression = require('compression')
 
 ,   Game = require('./lib/game')
 ,   current = null
-,   counter = 0;
+,   counter = 0
+
+,   shortId = require('shortid');
 
 require('./config')(app);
+
+// console.log(shortId.generate());
 
 io.on('connection', function (socket)
 {
