@@ -18,6 +18,5 @@
   "trailing": true,
   "smarttabs": true,
   "laxcomma": true,
-  "globals": {
-  }
+  "predef": ["io"]
 }

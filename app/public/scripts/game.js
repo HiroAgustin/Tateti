@@ -1,7 +1,7 @@
 (function (win, doc, undefined)
 {
 	'use strict';
-	
+
 	var game = {
 
 			init: function (options)
@@ -159,7 +159,7 @@
 				this.playerTiles = this.board.getElementsByClassName('player-' + id);
 
 				return this.playerTiles.length >= this.size && (
-					this.hasRow() || this.hasColumn() || 
+					this.hasRow() || this.hasColumn() ||
 					this.hasLeftDiagonal() || this.hasRightDiagonal()
 				);
 			}
@@ -226,7 +226,7 @@
 
 				this.forEach(this.playerTiles, function (element)
 				{
-					if (element.dataset.row == row && element.dataset.column == column)
+					if (element.dataset.row === row && element.dataset.column === column)
 						valid = true;
 				});
 

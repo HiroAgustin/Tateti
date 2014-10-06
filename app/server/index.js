@@ -4,19 +4,16 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express')
-,   app = module.exports = express()
+  ,  app = module.exports = express()
 
-,   server = require('http').Server(app)
-,   io = require('socket.io')(server)
+  ,  server = require('http').Server(app)
+  ,  io = require('socket.io')(server)
 
-// ,   bodyParser = require('body-parser')
-// ,   compression = require('compression')
+  ,  Game = require('./lib/game')
+  ,  current = null
+  ,  counter = 0;
 
-,   Game = require('./lib/game')
-,   current = null
-,   counter = 0
-
-,   shortId = require('shortid');
+  // ,  shortId = require('shortid');
 
 require('./config')(app);
 
@@ -24,13 +21,13 @@ require('./config')(app);
 
 io.on('connection', function (socket)
 {
-    if (!current || current.isFull())
-        current = new Game({
-            id: counter++
-        ,   server: io
-        });
+  if (!current || current.isFull())
+    current = new Game({
+      id: counter++
+    , server: io
+    });
 
-    current.addPlayer(socket);
+  current.addPlayer(socket);
 });
 
 server.listen(process.env.PORT || 8080);

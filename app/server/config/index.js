@@ -1,7 +1,3 @@
-// Server configuration
-
-'use strict';
-
 var path = require('path')
 	,	express = require('express')
 	,	favicon = require('serve-favicon')
@@ -12,32 +8,30 @@ var path = require('path')
 
 module.exports = function (app)
 {
+	'use strict';
+
 	var env = app.get('env');
 
-	app.set('views', root + '/server/views');
-	app.engine('html', require('ejs').renderFile);
 	app.set('view engine', 'html');
+	app.engine('html', require('ejs').renderFile);
+	app.set('views', root + '/server/views');
 
 	app.use(compression());
+
 	app.use(bodyParser.json());
+
 	app.use(bodyParser.urlencoded({
 		extended: false
 	}));
 
-	if ('production' === env)
+	app.use(favicon(path.join(root, 'public', 'favicon.ico')));
+
+	if (env === 'development')
 	{
-		app.use(favicon(path.join(root, 'public', 'favicon.ico')));
-		app.use(express.static(path.join(root, 'public')));
-		app.set('appPath', root + '/public');
+		app.use(express.static(path.join(root, '../.tmp')));
 	}
 
-	if ('development' === env || 'test' === env)
-	{
-		// app.use(require('connect-livereload')());
-		app.use(express.static(path.join(root, '.tmp')));
-		app.use(express.static(path.join(root, 'client')));
-		app.set('appPath', 'client');
-		// Error handler - has to be last
-		app.use(errorHandler());
-	}
+	app.use(express.static(path.join(root, 'public')));
+
+	app.use(errorHandler());
 };

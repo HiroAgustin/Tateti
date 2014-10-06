@@ -1,48 +1,54 @@
-var Player = require('./player')
+(function ()
+{
+  'use strict';
 
-,   Game = function Game (options)
-    {
+  var Player = require('./player')
+
+    , Game = function Game (options)
+      {
         this.id = options.id;
         this.server = options.server;
 
         this.init();
-    };
+      };
 
-Game.prototype = {
+  Game.prototype = {
 
     init: function ()
     {
-        this.players = [];
+      this.players = [];
 
-        return this;
+      return this;
     }
 
-,   broadcast: function (key, message)
+  , broadcast: function (key, message)
     {
-        this.server.to(this.id).emit(key, message);
+      this.server.to(this.id).emit(key, message);
 
-        return this;
+      return this;
     }
 
-,   isFull: function ()
+  , isFull: function ()
     {
-        return this.players.length >= 2;
+      return this.players.length >= 2;
     }
 
-,   addPlayer: function (socket)
+  , addPlayer: function (socket)
     {
-        var players = this.players
-        ,   player = new Player(socket, this.id);
+      var players = this.players
+      , player = new Player(socket, this.id);
 
-        players.push(player);
+      players.push(player);
 
-        player.setPlayerNumber(players.length);
+      player.setPlayerNumber(players.length);
 
-        if (players.length === 2)
-            this.broadcast('ready');
+      if (players.length === 2)
+        this.broadcast('ready');
 
-        return this;
+      return this;
     }
-};
+  };
 
-module.exports = Game;
+  module.exports = Game;
+  
+}());
