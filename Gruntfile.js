@@ -5,6 +5,7 @@ module.exports = function (grunt)
   // Load grunt tasks automatically, when needed
   require('jit-grunt')(grunt, {
     express: 'grunt-express-server'
+  ,	useminPrepare: 'grunt-usemin'
   ,	buildcontrol: 'grunt-build-control'
   });
 
@@ -63,7 +64,17 @@ module.exports = function (grunt)
       options: {
         dest: '<%= config.dist %>/public'
       }
-    ,	html: ['<%= config.app.client %>/index.html']
+    ,	html: ['<%= config.app.client %>/{,*/}*.html']
+    }
+
+  , filerev: {
+      options: {
+        algorithm: 'md5'
+      , length: 8
+      }
+    , dist: {
+        src: '<%= config.dist %>/public/**/*.{css,js}'
+      }
     }
 
     // Performs rewrites based on rev and the useminPrepare configuration
@@ -82,29 +93,6 @@ module.exports = function (grunt)
             [/(images\/.*?\.(?:gif|jpeg|jpg|png|webp|svg))/gm, 'Update the JS to reference our revved images']
           ]
         }
-      }
-    }
-
-    // The following *-min tasks produce minified files in the dist folder
-  ,	imagemin: {
-      dist: {
-        files: [{
-          expand: true
-        ,	cwd: '<%= config.app.client %>/images'
-        ,	src: '{,*/}*.{png,jpg,jpeg,gif}'
-        ,	dest: '<%= config.dist %>/public/images'
-        }]
-      }
-    }
-
-  ,	svgmin: {
-      dist: {
-        files: [{
-          expand: true
-        ,	cwd: '<%= config.app.client %>/images'
-        ,	src: '{,*/}*.svg'
-        ,	dest: '<%= config.dist %>/public/images'
-        }]
       }
     }
 
@@ -324,9 +312,16 @@ module.exports = function (grunt)
 
   grunt.registerTask('build', [
     'clean:dist'
+  , 'useminPrepare'
   , 'compass'
   , 'autoprefixer'
   ,	'copy:dist'
+  , 'concat:generated'
+  , 'cssmin:generated'
+  , 'uglify:generated'
+  , 'filerev'
+  , 'usemin'
+  ,	'htmlmin'
   ]);
 
   grunt.registerTask('deploy', [
