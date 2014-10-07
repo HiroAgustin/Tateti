@@ -1,0 +1,47 @@
+@import "config/colors";
+
+.board {
+  margin: 0 auto;
+  padding: 0.5em;
+}
+
+.tile {
+  background: $white;
+  cursor: pointer;
+  float: left;
+
+  text-align: center;
+
+  // Review
+  height: 50px;
+  font-size: 2.5em;
+  line-height: 50px;
+  margin: 0 2% 2% 0;
+  width: 32%;
+  // /Review
+
+  &:nth-child(3n) {
+    margin: 0;
+  }
+
+  &::after {
+    display: block;
+  }
+}
+
+.tile-1 {
+  color: $red;
+
+  &::after {
+    content: '✖';
+  }
+}
+
+.tile-2 {
+  color: $green;
+
+  &::after {
+    content: '●';
+    font-size: 1.6em;
+  }
+}

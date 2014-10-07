@@ -66,6 +66,10 @@ module.exports = function (grunt)
           '<%= config.app.server %>/views/{,*/}*.ejs'
         ]
 
+      , exclude: [
+          '<%= config.app.client %>/bower_components/colors'
+        ]
+
       , ignorePath: '../../public/'
 
       , overrides: {
@@ -268,12 +272,12 @@ module.exports = function (grunt)
       ,	httpFontsPath: '<%= config.app.client %>/styles/fonts'
       ,	relativeAssets: false
       ,	assetCacheBuster: false
-      ,	raw: 'Sass::Script::Number.precision = 10\n'
+      , outputStyle: 'compressed'
       }
 
     , server: {
         options: {
-          debugInfo: true
+          debugInfo: false
         }
       }
     }

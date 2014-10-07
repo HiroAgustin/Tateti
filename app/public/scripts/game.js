@@ -102,7 +102,7 @@
 				var element = this.$('[data-row="' + data.row + '"][data-column="' + data.column + '"]')[0];
 
 				element.classList.add('selected');
-				element.classList.add('player-' + data.playerId);
+				element.classList.add('tile-' + data.playerId);
 
 				if (!this.isGameOver(data.playerId))
 					this.togglePlayer();
@@ -115,7 +115,7 @@
 		,	select: function (element)
 			{
 				element.classList.add('selected');
-				element.classList.add('player-' + this.id);
+				element.classList.add('tile-' + this.id);
 
 				this.socket.emit('select', element.dataset);
 
@@ -156,7 +156,7 @@
 
 		,	hasPlayerWon: function (id)
 			{
-				this.playerTiles = this.board.getElementsByClassName('player-' + id);
+				this.playerTiles = this.board.getElementsByClassName('tile-' + id);
 
 				return this.playerTiles.length >= this.size && (
 					this.hasRow() || this.hasColumn() ||
