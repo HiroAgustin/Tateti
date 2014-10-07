@@ -66,6 +66,8 @@ module.exports = function (grunt)
           '<%= config.app.server %>/views/{,*/}*.ejs'
         ]
 
+      , ignorePath: '../../public/'
+
       , overrides: {
           'socket.io-client': {
               main: 'socket.io.js'
