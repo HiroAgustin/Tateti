@@ -262,7 +262,7 @@ module.exports = function (grunt)
   , uncss: {
       dist: {
         files: {
-          '<%= config.dist %>/public/styles/main.css': ['<%= config.dist %>/public/index.html']
+          '<%= config.dist %>/public/styles/main.css': ['<%= config.dist %>/public/index.html', '<%= config.dist %>/public/sample.html']
         }
       }
     }
