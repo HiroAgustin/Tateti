@@ -1,7 +1,9 @@
 @import "base";
 
 @import "utils/text";
-@import "config/grid";
 
+@import "components/grid";
+@import "components/forms";
 @import "components/board";
+@import "components/buttons";
 @import "components/headings";
