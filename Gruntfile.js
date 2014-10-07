@@ -56,6 +56,24 @@ module.exports = function (grunt)
     ,	server: '.tmp'
     }
 
+  , wiredep: {
+
+      target: {
+
+        // Point to the files that should be updated when
+        // you run `grunt wiredep`
+        src: [
+          '<%= config.app.server %>/views/{,*/}*.ejs'
+        ]
+
+      , overrides: {
+          'socket.io-client': {
+              main: 'socket.io.js'
+          }
+        }
+      }
+    }
+
 
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
@@ -64,7 +82,7 @@ module.exports = function (grunt)
       options: {
         dest: '<%= config.dist %>/public'
       }
-    ,	html: ['<%= config.app.client %>/{,*/}*.html']
+    ,	html: ['<%= config.app.server %>/views/{,*/}*.ejs']
     }
 
   , filerev: {
@@ -79,7 +97,7 @@ module.exports = function (grunt)
 
     // Performs rewrites based on rev and the useminPrepare configuration
   ,	usemin: {
-      html: ['<%= config.dist %>/public/{,*/}*.html']
+      html: ['<%= config.dist %>/server/views/{,*/}*.ejs']
     ,	css: ['<%= config.dist %>/public/styles/{,*/}*.css']
     ,	js: ['<%= config.dist %>/public/scripts/{,*/}*.js']
     ,	options: {
@@ -110,9 +128,9 @@ module.exports = function (grunt)
         }
       ,	files: [{
           expand: true
-        ,	cwd: '<%= config.dist %>/public'
-        ,	src: '{,*/}*.html'
-        ,	dest: '<%= config.dist %>/public'
+        ,	cwd: '<%= config.dist %>/server/views'
+        ,	src: '{,*/}*.ejs'
+        ,	dest: '<%= config.dist %>/server/views'
         }]
       }
     }
@@ -130,7 +148,6 @@ module.exports = function (grunt)
               '*.{ico,png,txt}'
             ,	'images/{,*/}*.{webp}'
             ,	'styles/fonts/**/*'
-            ,	'index.html'
             ]
           }
         ,	{
@@ -216,7 +233,7 @@ module.exports = function (grunt)
           livereload: true
         }
       ,	files: [
-          '<%= config.app.client %>/{,*/}*.html'
+          '<%= config.app.server %>/views/{,*/}*.ejs'
         ,	'.tmp/styles/{,*/}*.css'
         ,	'<%= config.app.client %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]

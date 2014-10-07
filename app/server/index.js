@@ -4,20 +4,25 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express')
-  ,  app = module.exports = express()
+  , app = module.exports = express()
 
-  ,  server = require('http').Server(app)
-  ,  io = require('socket.io')(server)
+  , server = require('http').Server(app)
+  , io = require('socket.io')(server)
 
-  ,  Game = require('./lib/game')
-  ,  current = null
-  ,  counter = 0;
+  , Game = require('./lib/game')
+  , current = null
+  , counter = 0;
 
   // ,  shortId = require('shortid');
 
 require('./config')(app);
 
 // console.log(shortId.generate());
+
+app.get('/', function (req, res)
+{
+	res.render('home');
+});
 
 io.on('connection', function (socket)
 {

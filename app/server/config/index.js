@@ -12,7 +12,7 @@ module.exports = function (app)
 
 	var env = app.get('env');
 
-	app.set('view engine', 'html');
+	app.set('view engine', 'ejs');
 	app.engine('html', require('ejs').renderFile);
 	app.set('views', root + '/server/views');
 
