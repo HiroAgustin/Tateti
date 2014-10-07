@@ -24,6 +24,16 @@ app.get('/', function (req, res)
 	res.render('home');
 });
 
+app.get('/start', function (req, res)
+{
+  res.render('start');
+});
+
+app.get('/join', function (req, res)
+{
+  res.render('join');
+});
+
 io.on('connection', function (socket)
 {
   if (!current || current.isFull())
