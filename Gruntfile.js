@@ -75,6 +75,7 @@ module.exports = function (grunt)
   ,	useminPrepare: {
       options: {
         dest: '<%= config.dist %>/public'
+      , root: '<%= config.app %>/public'
       }
     ,	html: ['<%= config.app %>/server/views/{,*/}*.ejs']
     }
@@ -153,7 +154,7 @@ module.exports = function (grunt)
         ,	{
             expand: true
           ,	cwd: '<%= config.app %>/server'
-          ,	dest: '<%= config.dist %>/server/'
+          ,	dest: '<%= config.dist %>/server'
           , src: ['**']
           }
         ,	{
