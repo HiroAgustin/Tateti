@@ -130,7 +130,7 @@ module.exports = function (grunt)
               '*.{ico,png,txt}'
             ,	'images/{,*/}*.{webp}'
             ,	'styles/fonts/**/*'
-            ,	'{,*/}*.{html}'
+            ,	'index.html'
             ]
           }
         ,	{
