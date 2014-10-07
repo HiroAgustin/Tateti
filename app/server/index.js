@@ -1,49 +1,20 @@
-'use strict';
-
-// Set default node environment to development
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
-var express = require('express')
-  , app = module.exports = express()
-
-  , server = require('http').Server(app)
-  , io = require('socket.io')(server)
-
-  , Game = require('./lib/game')
-
-  , shortId = require('shortid')
-
-  , matches = {};
-
-require('./config')(app);
-
-app.get('/', function (req, res)
+(function ()
 {
-	res.render('pages/home');
-});
+  'use strict';
 
-app.get('/start', function (req, res)
-{
-  var id = shortId.generate();
+  var app = module.exports = require('express')();
 
-  matches[id] = new Game({
-    id: id
-  , server: io.of('/' + id)
-  });
+  // Set default node environment to development
+  process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-  res.redirect('/play?id=' + id);
-});
+  app.server = require('http').Server(app);
 
-app.get('/play', function (req, res)
-{
-  res.render('pages/play', {
-    id: req.query.id
-  });
-});
+  require('./config')(app);
 
-app.get('/join', function (req, res)
-{
-  res.render('pages/join');
-});
+  require('./controllers/start')(app);
 
-server.listen(process.env.PORT || 8080);
+  require('./controllers/landing')(app);
+
+  app.server.listen(process.env.PORT || 8080);
+
+}());

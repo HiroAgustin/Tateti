@@ -59,19 +59,11 @@ module.exports = function (grunt)
   , wiredep: {
 
       target: {
-
         // Point to the files that should be updated when
         // you run `grunt wiredep`
-        src: [
-          '<%= config.app.server %>/views/{,*/}*.ejs'
-        ]
-
-      , exclude: [
-          '<%= config.app.client %>/bower_components/colors'
-        ]
-
+        src: ['<%= config.app.server %>/views/{,*/}*.ejs']
+      , exclude: ['<%= config.app.client %>/bower_components/colors']
       , ignorePath: '../../public/'
-
       , overrides: {
           'socket.io-client': {
               main: 'socket.io.js'
@@ -79,7 +71,6 @@ module.exports = function (grunt)
         }
       }
     }
-
 
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so

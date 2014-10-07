@@ -248,6 +248,9 @@
 			{
 				var valid = false;
 
+				row = row.toString();
+				column = column.toString();
+
 				this.forEach(this.playerTiles, function (element)
 				{
 					if (element.dataset.row === row && element.dataset.column === column)

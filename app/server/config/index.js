@@ -1,31 +1,34 @@
-var path = require('path')
-	,	express = require('express')
-	,	favicon = require('serve-favicon')
-	,	bodyParser = require('body-parser')
-	,	compression = require('compression')
-	,	errorHandler = require('errorhandler')
-	,	root = path.normalize(__dirname + '/../..');
-
-module.exports = function (app)
+(function ()
 {
 	'use strict';
 
-	app.set('view engine', 'ejs');
-	app.engine('html', require('ejs').renderFile);
-	app.set('views', root + '/server/views');
+	var path = require('path')
+		,	express = require('express')
+		,	favicon = require('serve-favicon')
+		,	bodyParser = require('body-parser')
+		,	compression = require('compression')
+		,	errorHandler = require('errorhandler')
+		,	root = path.normalize(__dirname + '/../..');
 
-	app.use(compression());
-	app.use(bodyParser.json());
-	app.use(bodyParser.urlencoded({
-		extended: false
-	}));
+	module.exports = function (app)
+	{
+		app.set('view engine', 'ejs');
+		app.engine('html', require('ejs').renderFile);
+		app.set('views', root + '/server/views');
 
-	app.use(favicon(path.join(root, 'public', 'favicon.ico')));
+		app.use(compression());
+		app.use(bodyParser.json());
+		app.use(bodyParser.urlencoded({
+			extended: false
+		}));
 
-	if (app.get('env') === 'development')
-		app.use(express.static(path.join(root, '../.tmp')));
+		app.use(favicon(path.join(root, 'public', 'favicon.ico')));
 
-	app.use(express.static(path.join(root, 'public')));
+		if (app.get('env') === 'development')
+			app.use(express.static(path.join(root, '../.tmp')));
 
-	app.use(errorHandler());
-};
+		app.use(express.static(path.join(root, 'public')));
+
+		app.use(errorHandler());
+	};
+}());
