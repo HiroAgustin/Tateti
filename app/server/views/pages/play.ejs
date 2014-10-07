@@ -1,0 +1,22 @@
+<% include ../head %>
+
+<h1 class="text-center">Tic Tac Toe</h1>
+
+<h2 id="js-status" class="text-center">Waiting for oponent</h2>
+
+<p id="js-message" class="text-center">
+  Send the following code to your oponent: <b><%= id %></b> <br>
+  <small>(or just share your url)</small>
+</p>
+
+<div id="js-board" class="board"></div>
+
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/socket.io-client/socket.io.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js scripts/main.js -->
+<script src="scripts/game.js"></script>
+<!-- endbuild -->

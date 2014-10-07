@@ -10,14 +10,12 @@ var express = require('express')
   , io = require('socket.io')(server)
 
   , Game = require('./lib/game')
-  , current = null
-  , counter = 0;
 
-  // ,  shortId = require('shortid');
+  , shortId = require('shortid')
+
+  , matches = {};
 
 require('./config')(app);
-
-// console.log(shortId.generate());
 
 app.get('/', function (req, res)
 {
@@ -26,23 +24,26 @@ app.get('/', function (req, res)
 
 app.get('/start', function (req, res)
 {
-  res.render('pages/start');
+  var id = shortId.generate();
+
+  matches[id] = new Game({
+    id: id
+  , server: io.of('/' + id)
+  });
+
+  res.redirect('/play?id=' + id);
+});
+
+app.get('/play', function (req, res)
+{
+  res.render('pages/play', {
+    id: req.query.id
+  });
 });
 
 app.get('/join', function (req, res)
 {
   res.render('pages/join');
-});
-
-io.on('connection', function (socket)
-{
-  if (!current || current.isFull())
-    current = new Game({
-      id: counter++
-    , server: io
-    });
-
-  current.addPlayer(socket);
 });
 
 server.listen(process.env.PORT || 8080);

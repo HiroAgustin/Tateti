@@ -9,7 +9,7 @@
         this.id = options.id;
         this.server = options.server;
 
-        this.init();
+        this.init().addListeners();
       };
 
   Game.prototype = {
@@ -21,9 +21,20 @@
       return this;
     }
 
+  , addListeners: function ()
+    {
+      this.server.on('connection', this.connectionHandler.bind(this));
+    }
+
+  , connectionHandler: function (socket)
+    {
+      if (!this.isFull())
+        this.addPlayer(socket);
+    }
+
   , broadcast: function (key, message)
     {
-      this.server.to(this.id).emit(key, message);
+      this.server.emit(key, message);
 
       return this;
     }
@@ -36,7 +47,7 @@
   , addPlayer: function (socket)
     {
       var players = this.players
-      , player = new Player(socket, this.id);
+        , player = new Player(socket, this.id);
 
       players.push(player);
 

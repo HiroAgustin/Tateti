@@ -6,11 +6,27 @@
 
 			init: function (options)
 			{
-				this.socket = io();
+				this.socket = io('/' + this.getGameId());
 
 				this.size = options.size;
 
 				return this.mapDom().addListeners();
+			}
+
+		,	getGameId: function ()
+			{
+				var id = null
+					,	split = [];
+
+				location.search.substring(1).split('&').forEach(function (attribute)
+				{
+					split = attribute.split('=');
+
+					if (split[0] === 'id')
+						id = split[1];
+				});
+
+				return id;
 			}
 
 		,	$: function (selector)
@@ -27,6 +43,7 @@
 			{
 				this.board = this.$('#js-board')[0];
 				this.status = this.$('#js-status')[0];
+				this.message = this.$('#js-message')[0];
 
 				return this;
 			}
@@ -55,17 +72,25 @@
 
 				this.isMyTurn = id === 1;
 
-				this.updateStatus();
+				return this.clearMessage().updateStatus().generateBoard();
+			}
 
-				return this.generateBoard();
+		,	clearMessage: function ()
+			{
+				var message = this.message;
+
+				while (message.firstChild)
+					message.removeChild(message.firstChild);
+
+				return this;
 			}
 
 		,	generateBoard: function ()
 			{
 				var size = this.size
-				,	element = null
-				,	i = 0
-				,	j = 0;
+					,	element = null
+					,	i = 0
+					,	j = 0;
 
 				for (i = 0; i < size; i++)
 				{
@@ -130,9 +155,8 @@
 		,	togglePlayer: function ()
 			{
 				this.isMyTurn = !this.isMyTurn;
-				this.updateStatus();
 
-				return this;
+				return this.updateStatus();
 			}
 
 		,	updateStatus: function ()
@@ -177,8 +201,8 @@
 		,	hasLeftDiagonal: function ()
 			{
 				var size = this.size
-				,	valid = true
-				,	i = 0;
+					,	valid = true
+					,	i = 0;
 
 				for (i = 0; i < size; i++)
 				{
@@ -191,8 +215,8 @@
 		,	hasRightDiagonal: function ()
 			{
 				var valid = true
-				,	size = this.size
-				,	i = 0;
+					,	size = this.size
+					,	i = 0;
 
 				for (i = 0; i < size; i++)
 				{
@@ -205,9 +229,9 @@
 		,	hasStraight: function (data)
 			{
 				var valid = false
-				,	grouped = {}
-				,	attr = null
-				,	size = this.size;
+					,	grouped = {}
+					,	attr = null
+					,	size = this.size;
 
 				this.forEach(this.playerTiles, function (element)
 				{
