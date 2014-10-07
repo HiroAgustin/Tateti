@@ -19,10 +19,7 @@ module.exports = function (grunt)
     pkg: grunt.file.readJSON('package.json')
 
   , config: {
-      app: {
-        client: 'app/public'
-      , server: 'app/server'
-      }
+      app: 'app'
     , dist: 'dist'
     }
 
@@ -61,8 +58,8 @@ module.exports = function (grunt)
       target: {
         // Point to the files that should be updated when
         // you run `grunt wiredep`
-        src: ['<%= config.app.server %>/views/{,*/}*.ejs']
-      , exclude: ['<%= config.app.client %>/bower_components/colors']
+      src: ['<%= config.app %>/server/views/{,*/}*.ejs']
+      , exclude: ['<%= config.app %>/public/bower_components/colors']
       , ignorePath: '../../public/'
       , overrides: {
           'socket.io-client': {
@@ -79,7 +76,7 @@ module.exports = function (grunt)
       options: {
         dest: '<%= config.dist %>/public'
       }
-    ,	html: ['<%= config.app.server %>/views/{,*/}*.ejs']
+    ,	html: ['<%= config.app %>/server/views/{,*/}*.ejs']
     }
 
   , filerev: {
@@ -139,7 +136,7 @@ module.exports = function (grunt)
           {
             expand: true
           ,	dot: true
-          ,	cwd: '<%= config.app.client %>'
+          ,	cwd: '<%= config.app %>/public'
           ,	dest: '<%= config.dist %>/public'
           ,	src: [
               '*.{ico,png,txt}'
@@ -155,7 +152,7 @@ module.exports = function (grunt)
           }
         ,	{
             expand: true
-          ,	cwd: '<%= config.app.server %>'
+          ,	cwd: '<%= config.app %>/server'
           ,	dest: '<%= config.dist %>/server/'
           , src: ['**']
           }
@@ -167,6 +164,16 @@ module.exports = function (grunt)
             ,	'Procfile'
             ]
           }
+        ]
+      }
+
+    , styles: {
+        expand: true,
+        cwd: '<%= config.app %>/public/'
+      , dest: '.tmp/'
+      , src: [
+          'styles/{,*/}*.css'
+        , 'bower_components/**/*.css'
         ]
       }
     }
@@ -192,7 +199,7 @@ module.exports = function (grunt)
       ,	reporter: require('jshint-stylish')
       }
     ,	all: [
-        'Gruntfile.js', '<%= config.app.client %>/scripts/*.js', '<%= config.app.server %>/**/*.js'
+        'Gruntfile.js', '<%= config.app %>/public/scripts/*.js', '<%= config.app %>/server/**/*.js'
       ]
     }
 
@@ -202,7 +209,7 @@ module.exports = function (grunt)
       }
     ,	dev: {
         options: {
-          script: '<%= config.app.server %>'
+          script: '<%= config.app %>/server'
         ,	delay: 5
         }
       }
@@ -217,7 +224,7 @@ module.exports = function (grunt)
   ,	watch: {
 
       compass: {
-        files: ['<%= config.app.client %>/styles/{,*/}*.{scss,sass}']
+      files: ['<%= config.app %>/public/styles/{,*/}*.{scss,sass}']
       ,	tasks: ['compass', 'autoprefixer']
       }
 
@@ -230,14 +237,14 @@ module.exports = function (grunt)
           livereload: true
         }
       ,	files: [
-          '<%= config.app.server %>/views/{,*/}*.ejs'
+          '<%= config.app %>/server/views/{,*/}*.ejs'
         ,	'.tmp/styles/{,*/}*.css'
-        ,	'<%= config.app.client %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+        ,	'<%= config.app %>/public/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
 
     ,	express: {
-        files: ['<%= config.app.server %>/**/*.{js,json}']
+        files: ['<%= config.app %>/server/**/*.{js,json}']
       ,	tasks: ['express:dev', 'wait']
       ,	options: {
           livereload: true
@@ -251,16 +258,16 @@ module.exports = function (grunt)
   ,	compass: {
 
       options: {
-        sassDir: '<%= config.app.client %>/styles'
+        sassDir: '<%= config.app %>/public/styles'
       ,	cssDir: '.tmp/styles'
       ,	generatedImagesDir: '.tmp/images/generated'
-      ,	imagesDir: '<%= config.app.client %>/images'
-      ,	javascriptsDir: '<%= config.app.client %>/scripts'
-      ,	fontsDir: '<%= config.app.client %>/styles/fonts'
-      ,	importPath: '<%= config.app.client %>/bower_components'
-      ,	httpImagesPath: '<%= config.app.client %>/images'
-      ,	httpGeneratedImagesPath: '<%= config.app.client %>/images/generated'
-      ,	httpFontsPath: '<%= config.app.client %>/styles/fonts'
+      ,	imagesDir: '<%= config.app %>/public/images'
+      ,	javascriptsDir: '<%= config.app %>/public/scripts'
+      ,	fontsDir: '<%= config.app %>/public/styles/fonts'
+      ,	importPath: '<%= config.app %>/public/bower_components'
+      ,	httpImagesPath: '<%= config.app %>/public/images'
+      ,	httpGeneratedImagesPath: '<%= config.app %>/public/images/generated'
+      ,	httpFontsPath: '<%= config.app %>/public/styles/fonts'
       ,	relativeAssets: false
       ,	assetCacheBuster: false
       , outputStyle: 'compressed'
@@ -329,7 +336,7 @@ module.exports = function (grunt)
   , 'useminPrepare'
   , 'compass'
   , 'autoprefixer'
-  ,	'copy:dist'
+  ,	'copy'
   , 'concat:generated'
   , 'cssmin:generated'
   , 'uglify:generated'
