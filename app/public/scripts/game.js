@@ -10,7 +10,7 @@
 
 				this.size = options.size;
 
-				return this.mapDom().addListeners();
+				return this.mapDom().clearBoard().addListeners();
 			}
 
 		,	$: function (selector)
@@ -27,6 +27,16 @@
 			{
 				this.board = this.$('#js-board')[0];
 				this.status = this.$('#js-status')[0];
+
+				return this;
+			}
+
+		,	clearBoard: function ()
+			{
+				var board = this.board;
+
+				while (board.firstChild)
+					board.removeChild(board.firstChild);
 
 				return this;
 			}

@@ -1,88 +1,92 @@
-*, *::after {
-    box-sizing: border-box;
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 body {
-    background: #ddd;
-    font-family: 'Raleway', sans-serif;
-    margin: 0;
+  background: #ddd;
+  font-family: 'Raleway', sans-serif;
+  margin: 0;
 }
 
 h1 {
-    background: #001f3f;
-    color: white;
-    font-size: 2em;
-    font-weight: normal;
-    margin: 0;
-    padding: 0.4em;
+  background: #001f3f;
+  color: white;
+  font-size: 2em;
+  font-weight: normal;
+  margin: 0;
+  padding: 0.4em;
 }
 
 h2 {
-    color: #111;
-    font-size: 1.5em;
-    font-weight: normal;
+  color: #111;
+  font-size: 1.5em;
+  font-weight: normal;
 }
 
 b {
-    color: #FFDC00;
+  color: #FFDC00;
 }
 
 a {
-    color: #0074D9;
-    border-bottom: 1px solid #0074D9;
-    text-decoration: none;
+  color: #0074D9;
+  border-bottom: 1px solid #0074D9;
+  text-decoration: none;
 }
 
 a:hover {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .text-center {
-    text-align: center;
+  text-align: center;
 }
 
 .player-1 {
-    color: #FF4136;
+  color: #FF4136;
 }
 
 .player-2 {
-    color: #2ECC40;
+  color: #2ECC40;
 }
 
 .board {
-    margin: 0 auto;
-    padding: 0.5em;
+  margin: 0 auto;
+  padding: 0.5em;
 }
 
 .board .player-1::after {
-    content: '✖';
+  content: '✖';
 }
 
 .board .player-2::after {
-    content: '●';
-    font-size: 1.6em;
+  content: '●';
+  font-size: 1.6em;
 }
 
 .tile {
-    background: white;
-    cursor: pointer;
-    float: left;
+  background: white;
+  cursor: pointer;
+  float: left;
 
-    height: 50px;
+  height: 50px;
 
-    font-size: 2.5em;
-    line-height: 50px;
+  font-size: 2.5em;
+  line-height: 50px;
 
-    margin: 0 2% 2% 0;
-    text-align: center;
+  margin: 0 2% 2% 0;
+  text-align: center;
 
-    width: 32%;
+  width: 32%;
 }
 
 .tile:nth-child(3n) {
-    margin: 0;
+  margin: 0;
 }
 
 .tile::after {
-    display: block;
+  display: block;
 }

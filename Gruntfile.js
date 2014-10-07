@@ -259,6 +259,14 @@ module.exports = function (grunt)
       }
     }
 
+  , uncss: {
+      dist: {
+        files: {
+          '<%= config.dist %>/public/styles/main.css': ['<%= config.dist %>/public/index.html']
+        }
+      }
+    }
+
   ,	buildcontrol: {
 
       options: {
@@ -319,6 +327,7 @@ module.exports = function (grunt)
   , 'concat:generated'
   , 'cssmin:generated'
   , 'uglify:generated'
+  , 'uncss'
   , 'filerev'
   , 'usemin'
   ,	'htmlmin'
