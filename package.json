@@ -41,7 +41,6 @@
     "grunt-express-server": "^0.4.19",
     "grunt-filerev": "^2.0.0",
     "grunt-open": "^0.2.3",
-    "grunt-uncss": "^0.3.7",
     "grunt-usemin": "^2.4.0",
     "jit-grunt": "^0.8.0",
     "jshint-stylish": "^1.0.0",
