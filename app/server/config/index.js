@@ -10,26 +10,20 @@ module.exports = function (app)
 {
 	'use strict';
 
-	var env = app.get('env');
-
 	app.set('view engine', 'ejs');
 	app.engine('html', require('ejs').renderFile);
 	app.set('views', root + '/server/views');
 
 	app.use(compression());
-
 	app.use(bodyParser.json());
-
 	app.use(bodyParser.urlencoded({
 		extended: false
 	}));
 
 	app.use(favicon(path.join(root, 'public', 'favicon.ico')));
 
-	if (env === 'development')
-	{
+	if (app.get('env') === 'development')
 		app.use(express.static(path.join(root, '../.tmp')));
-	}
 
 	app.use(express.static(path.join(root, 'public')));
 
