@@ -21,17 +21,17 @@ require('./config')(app);
 
 app.get('/', function (req, res)
 {
-	res.render('home');
+	res.render('pages/home');
 });
 
 app.get('/start', function (req, res)
 {
-  res.render('start');
+  res.render('pages/start');
 });
 
 app.get('/join', function (req, res)
 {
-  res.render('join');
+  res.render('pages/join');
 });
 
 io.on('connection', function (socket)
