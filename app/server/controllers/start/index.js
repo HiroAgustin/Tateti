@@ -7,13 +7,17 @@
 
   module.exports = function (app)
   {
-    var io = require('socket.io')(app.server);
+    var io = require('socket.io')(app.server)
+      , id = null;
 
     app.matches = {};
 
     app.get('/start', function (req, res)
     {
-      var id = shortId.generate();
+      id = shortId.generate();
+
+      while (~id.indexOf('-'))
+        id = shortId.generate();
 
       app.matches[id] = new Game({
         id: id
