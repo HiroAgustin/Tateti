@@ -60,7 +60,7 @@ module.exports = function (grunt)
         // you run `grunt wiredep`
       src: ['<%= config.app %>/server/views/{,*/}*.ejs']
       , exclude: ['<%= config.app %>/public/bower_components/colors']
-      , ignorePath: '../../public/'
+      , ignorePath: '../../public'
       , overrides: {
           'socket.io-client': {
               main: 'socket.io.js'
