@@ -121,24 +121,10 @@
 				return element.classList.contains('selected');
 			}
 
-		// ,	otherPlayerSelected: function (data)
-		// 	{
-		// 		var element = this.$('[data-row="' + data.row + '"][data-column="' + data.column + '"]')[0];
-		//
-		// 		element.classList.add('selected');
-		// 		element.classList.add('tile-' + data.playerId);
-		//
-		// 		if (!this.isGameOver(data.playerId))
-		// 			this.togglePlayer();
-		// 		else
-		// 			this.setStatus('You lose bitch!');
-		//
-		// 		return this;
-		// 	}
-
 		,	select: function (options)
 			{
-				var row = options.row
+				var id = this.id
+					,	row = options.row
 					,	column = options.column
 					,	player = options.player
 					,	element = this.$('[data-row="' + row + '"][data-column="' + column + '"]')[0];
@@ -146,29 +132,22 @@
 				element.classList.add('selected', 'tile-' + player);
 
 				// Tell the other guy I selected
-				if (player === this.id)
+				if (player === id)
 					this.socket.emit('select', {
 						row: row
 					,	column: column
 					});
 
-				return this.togglePlayer();
-				// var data = element.dataset;
-				//
-				// element.classList.add('selected');
-				// element.classList.add('tile-' + this.id);
-				//
-				// this.socket.emit('select', {
-				// 	row: data.row
-				// ,	column: data.column
-				// });
-				//
-				// if (!this.isGameOver(this.id))
-				// 	this.togglePlayer();
-				// else
-				// 	this.celebrate();
-				//
-				// return this;
+				if (!this.isGameOver())
+					this.togglePlayer();
+
+				else if (this.winner === id)
+					this.celebrate();
+
+				else
+					this.setStatus('You lose!');
+
+				return this;
 			}
 
 		,	togglePlayer: function ()
@@ -185,11 +164,15 @@
 				return this;
 			}
 
-		,	isGameOver: function (id)
+		,	isGameOver: function ()
 			{
-				if (this.hasPlayerWon(id))
-					return (this.winner = id);
-				else if (!this.$(':not(.selected)').length)
+				if (this.hasPlayerWon(1))
+					return (this.winner = 1);
+
+				if (this.hasPlayerWon(2))
+					return (this.winner = 2);
+
+				if (!this.$(':not(.selected)').length)
 					return true;
 
 				return false;
@@ -217,38 +200,20 @@
 
 		,	hasLeftDiagonal: function ()
 			{
-				var size = this.size
-					,	valid = true
-					,	i = 0;
-
-				for (i = 0; i < size; i++)
-				{
-					valid = valid && this.hasTile(i, i);
-				}
-
-				return valid;
+				return this.hasDiagonal();
 			}
 
 		,	hasRightDiagonal: function ()
 			{
-				var valid = true
-					,	size = this.size
-					,	i = 0;
-
-				for (i = 0; i < size; i++)
-				{
-					valid = valid && this.hasTile(i, size - i - 1);
-				}
-
-				return valid;
+				return this.hasDiagonal(true);
 			}
 
 		,	hasStraight: function (data)
 			{
-				var valid = false
+				var size = this.size
+					,	valid = false
 					,	grouped = {}
-					,	attr = null
-					,	size = this.size;
+					,	attr = null;
 
 				this.forEach(this.playerTiles, function (element)
 				{
@@ -257,6 +222,23 @@
 
 				for (attr in grouped)
 					valid = valid || grouped[attr] === size;
+
+				return valid;
+			}
+
+		,	hasDiagonal: function (inverse)
+			{
+				var size = this.size
+					,	valid = true
+					,	i = 0;
+
+				if (inverse)
+					for (i = 0; i < size; i++)
+						valid = valid && this.hasTile(i, size - i - 1);
+
+				else
+					for (i = 0; i < size; i++)
+						valid = valid && this.hasTile(i, i);
 
 				return valid;
 			}

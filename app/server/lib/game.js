@@ -64,7 +64,7 @@
       var tile = options.tile
         , player = options.player;
 
-      player.broadcast.emit('select', {
+      player.socket.broadcast.emit('select', {
         row: tile.row
       , column: tile.column
       , player: player.id
