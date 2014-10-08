@@ -9,6 +9,12 @@
 
   app.server = require('http').Server(app);
 
+  app.use(require('express-session')({
+    secret: 'tateti'
+  , resave: true
+  , saveUninitialized: true
+  }));
+
   require('./config')(app);
 
   require('./controllers/start')(app);

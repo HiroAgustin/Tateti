@@ -7,14 +7,21 @@
 
   module.exports = function (app)
   {
-    var io = require('socket.io')(app.server)
-      , id = null;
+    var io = require('socket.io')(app.server);
 
     app.matches = {};
 
     app.get('/start', function (req, res)
     {
-      id = shortId.generate();
+      var session = req.session
+        , id = shortId.generate();
+
+      session.flow = '/start';
+
+      if (!session.name)
+      {
+        return res.redirect('/name');
+      }
 
       while (~id.indexOf('-'))
         id = shortId.generate();
