@@ -43,16 +43,26 @@
 
 				this.socket
 					.on('ready', this.ready.bind(this))
-					.on('setPlayerNumber', this.setPlayerNumber.bind(this))
-					.on('otherPlayerSelected', this.otherPlayerSelected.bind(this));
+					.on('select', this.select.bind(this))
+					.on('setPlayerId', this.setPlayerId.bind(this));
 
 				return this;
 			}
 
 		,	clickHandler: function (e)
 			{
-				if (!this.isGameOver(this.id) && this.isMyTurn && !this.isSelected(e.target))
-					this.select(e.target);
+				var id = this.id
+					,	target = e.target
+					,	data = target.dataset;
+
+				if (this.isMyTurn && !this.isSelected(target))
+				{
+					this.select({
+						player: id
+					,	row: data.row
+					,	column: data.column
+					});
+				}
 			}
 
 		,	ready: function ()
@@ -99,9 +109,9 @@
 				return this;
 			}
 
-		,	setPlayerNumber: function (number)
+		,	setPlayerId: function (id)
 			{
-				this.id = number;
+				this.id = id;
 
 				return this;
 			}
@@ -111,34 +121,54 @@
 				return element.classList.contains('selected');
 			}
 
-		,	otherPlayerSelected: function (data)
+		// ,	otherPlayerSelected: function (data)
+		// 	{
+		// 		var element = this.$('[data-row="' + data.row + '"][data-column="' + data.column + '"]')[0];
+		//
+		// 		element.classList.add('selected');
+		// 		element.classList.add('tile-' + data.playerId);
+		//
+		// 		if (!this.isGameOver(data.playerId))
+		// 			this.togglePlayer();
+		// 		else
+		// 			this.setStatus('You lose bitch!');
+		//
+		// 		return this;
+		// 	}
+
+		,	select: function (options)
 			{
-				var element = this.$('[data-row="' + data.row + '"][data-column="' + data.column + '"]')[0];
+				var row = options.row
+					,	column = options.column
+					,	player = options.player
+					,	element = this.$('[data-row="' + row + '"][data-column="' + column + '"]')[0];
 
-				element.classList.add('selected');
-				element.classList.add('tile-' + data.playerId);
+				element.classList.add('selected', 'tile-' + player);
 
-				if (!this.isGameOver(data.playerId))
-					this.togglePlayer();
-				else
-					this.setStatus('You lose bitch!');
+				// Tell the other guy I selected
+				if (player === this.id)
+					this.socket.emit('select', {
+						row: row
+					,	column: column
+					});
 
-				return this;
-			}
-
-		,	select: function (element)
-			{
-				element.classList.add('selected');
-				element.classList.add('tile-' + this.id);
-
-				this.socket.emit('select', element.dataset);
-
-				if (!this.isGameOver(this.id))
-					this.togglePlayer();
-				else
-					this.celebrate();
-
-				return this;
+				return this.togglePlayer();
+				// var data = element.dataset;
+				//
+				// element.classList.add('selected');
+				// element.classList.add('tile-' + this.id);
+				//
+				// this.socket.emit('select', {
+				// 	row: data.row
+				// ,	column: data.column
+				// });
+				//
+				// if (!this.isGameOver(this.id))
+				// 	this.togglePlayer();
+				// else
+				// 	this.celebrate();
+				//
+				// return this;
 			}
 
 		,	togglePlayer: function ()
@@ -150,9 +180,7 @@
 
 		,	updateStatus: function ()
 			{
-				var id = this.id;
-
-				this.setStatus('Soy el <span class="player-' + id + '">' + id + '</span> y ' + (!this.isMyTurn ? 'no ' : '') + 'es mi turno');
+				this.setStatus(this.isMyTurn ? 'Your turn.' : '');
 
 				return this;
 			}

@@ -2,41 +2,38 @@
 {
   'use strict';
 
-  var Player = require('./player')
+  var _ = require('underscore')
+
+    , Player = require('./player')
 
     , Game = function Game (options)
       {
-        this.id = options.id;
         this.server = options.server;
 
-        this.init().addListeners();
+        this.init();
       };
 
-  Game.prototype = {
+  _.extend(Game.prototype, {
 
     init: function ()
     {
       this.players = [];
 
-      return this;
+      return this.addListeners();
     }
 
   , addListeners: function ()
     {
       this.server.on('connection', this.connectionHandler.bind(this));
+
+      return this;
     }
 
   , connectionHandler: function (socket)
     {
       if (!this.isFull())
         this.addPlayer(socket);
-    }
-
-  , broadcast: function (key, message)
-    {
-      this.server.emit(key, message);
-
-      return this;
+      // Handle Error
     }
 
   , isFull: function ()
@@ -46,19 +43,36 @@
 
   , addPlayer: function (socket)
     {
-      var players = this.players
-        , player = new Player(socket, this.id);
+      var players = this.players;
 
-      players.push(player);
+      players.push(
+        new Player({
+          id: players.length + 1
+        , socket: socket
+        , game: this
+        })
+      );
 
-      player.setPlayerNumber(players.length);
-
-      if (players.length === 2)
-        this.broadcast('ready');
+      if (this.isFull())
+        this.server.emit('ready');
 
       return this;
     }
-  };
+
+  , selectTile: function (options)
+    {
+      var tile = options.tile
+        , player = options.player;
+
+      player.broadcast.emit('select', {
+        row: tile.row
+      , column: tile.column
+      , player: player.id
+      });
+
+      return this;
+    }
+  });
 
   module.exports = Game;
 

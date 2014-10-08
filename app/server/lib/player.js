@@ -2,52 +2,48 @@
 {
   'use strict';
 
-  var Player = function Player (socket, id)
-  {
-    this.socket = socket;
-    this.game = id;
+  var _ = require('underscore')
 
-    this.init();
-  };
+    , Player = function Player (options)
+      {
+        this.socket = options.socket;
+        this.game = options.game;
+        this.id = options.id;
 
-  Player.prototype = {
+        this.init();
+      };
+
+  _.extend(Player.prototype, {
 
     init: function ()
     {
-      this.socket.join(this.game);
-
-      this.addListeners();
-
-      return this;
+      return this.addListeners().setPlayerId();
     }
 
   , addListeners: function ()
     {
-      var socket = this.socket
-        , game = this.game
-        , self = this;
+      var socket = this.socket;
 
-      socket.on('select', function (tile)
-      {
-        socket.broadcast.to(game).emit('otherPlayerSelected', {
-          playerId: self.playerId
-        , row: tile.row
-        , column: tile.column
-        });
+      socket.on('select', this.select.bind(this));
+
+      return this;
+    }
+
+  , setPlayerId: function ()
+    {
+      this.socket.emit('setPlayerId', this.id);
+    }
+
+  , select: function (tile)
+    {
+      this.game.selectTile({
+        player: this
+      , tile: tile
       });
 
       return this;
     }
-
-  , setPlayerNumber: function (number)
-    {
-      this.playerId = number;
-
-      this.socket.emit('setPlayerNumber', number);
-
-      return this;
-    }
-  };
+  });
 
   module.exports = Player;
 

@@ -14,7 +14,8 @@
     app.get('/start', function (req, res)
     {
       var session = req.session
-        , id = shortId.generate();
+        , id = shortId.generate()
+        , matches = app.matches;
 
       session.flow = '/start';
 
@@ -23,12 +24,11 @@
         return res.redirect('/name');
       }
 
-      while (~id.indexOf('-'))
+      while (~id.indexOf('-') || matches[id])
         id = shortId.generate();
 
-      app.matches[id] = new Game({
-        id: id
-      , server: io.of('/' + id)
+      matches[id] = new Game({
+        server: io.of('/' + id)
       });
 
       res.redirect('/play/' + id);
