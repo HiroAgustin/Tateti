@@ -22,7 +22,7 @@
 
       session.name = req.body.name;
 
-      res.redirect(session.flow);
+      res.redirect(session.flow || '/join');
     });
 
     app.get('/join', function (req, res)
