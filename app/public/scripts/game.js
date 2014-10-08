@@ -15,18 +15,7 @@
 
 		,	getGameId: function ()
 			{
-				var id = null
-					,	split = [];
-
-				location.search.substring(1).split('&').forEach(function (attribute)
-				{
-					split = attribute.split('=');
-
-					if (split[0] === 'id')
-						id = split[1];
-				});
-
-				return id;
+				return location.pathname.split('/')[2];
 			}
 
 		,	$: function (selector)

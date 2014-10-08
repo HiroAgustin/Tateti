@@ -24,7 +24,7 @@
       , server: io.of('/' + id)
       });
 
-      res.redirect('/play?id=' + id);
+      res.redirect('/play/' + id);
     });
   };
 
