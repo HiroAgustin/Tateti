@@ -54,19 +54,21 @@
       return this;
     }
 
-  , setStatus: function (player)
+  , setTurnStatus: function (player)
     {
-      player.emit('setStatus', this.playing === player ?
-        'Your turn ' + player.name :
-        this.playing.name + '\'s turn'
-      );
+      var playing = this.playing;
 
-      return this;
+      return playing === player ?
+        'Your turn ' + player.name :
+        playing.name + '\'s turn';
     }
 
-  , setStatuses: function ()
+  , setStatuses: function (callback)
     {
-      this.players.forEach(this.setStatus.bind(this));
+      this.players.forEach(function (player)
+      {
+        player.emit('setStatus', callback(player));
+      });
 
       return this;
     }
@@ -75,7 +77,7 @@
     {
       this.playing = this.players[0];
 
-      return this.emit('ready').setStatuses();
+      return this.emit('ready').setStatuses(this.setTurnStatus.bind(this));
     }
 
   , addPlayer: function (socket)
@@ -107,7 +109,23 @@
 
       return this
         .emit('togglePlayer', this.playing.id)
-        .setStatuses();
+        .setStatuses(this.setTurnStatus.bind(this));
+    }
+
+  , setEndStatus: function (player)
+    {
+      var winner = this.winner
+        , message = '';
+
+      if (winner)
+        message = winner === player ?
+          'Congratulations! You won!' :
+          'Too bad, ' + winner.name + ' defeated you.';
+
+      else
+        message = 'It\'s a tie!';
+
+      return message;
     }
 
   , selectTile: function (tile)
@@ -115,7 +133,7 @@
       this.playing.broadcast('select', tile);
 
       if (this.isGameOver())
-        console.log('Game Over');
+        this.setStatuses(this.setEndStatus.bind(this));
 
       else
         this.togglePlayer();
@@ -126,9 +144,15 @@
     // Game Logic
   ,	isGameOver: function ()
     {
-      var winner = _.find(this.players, this.hasPlayerWon.bind(this));
+      return this.getWinner() || this.isATie();
+    }
 
-      return winner || this.isTie();
+  , getWinner: function ()
+    {
+      this.winner = this.winner ||
+        _.find(this.players, this.hasPlayerWon.bind(this));
+
+      return this.winner;
     }
 
   , countTiles: function (memo, player)
@@ -136,11 +160,12 @@
       return memo + player.tiles.length;
     }
 
-  , isTie: function ()
+  , isATie: function ()
     {
-      console.log(_.reduce(this.players, this.countTiles.bind(this), 0));
+      this.isTied = this.isTied ||
+        _.reduce(this.players, this.countTiles.bind(this), 0) === this.maxTiles;
 
-      return _.reduce(this.players, this.countTiles.bind(this), 0) === this.maxTiles;
+      return this.isTied;
     }
 
   ,	hasPlayerWon: function (player)
@@ -153,6 +178,7 @@
       );
     }
 
+    // TODO Couldn't all of this be on the player?
   ,	hasRow: function (tiles)
     {
       return this.hasStraight(tiles, 'row');
@@ -197,30 +223,18 @@
         ,	valid = true
         ,	i = 0;
 
-      // while (i++ < size && valid)
-
-      if (inverse)
-        for (i = 0; i < size && valid; i++)
-          valid = this.hasTile(tiles, i, size - i - 1);
-
-      else
-        for (i = 0; i < size && valid; i++)
-          valid = this.hasTile(tiles, i, i);
+      for (i; i < size && valid; i++)
+        valid = this.hasTile(tiles, i, inverse ? size - i - 1 : i);
 
       return valid;
     }
 
   ,	hasTile: function (tiles, row, column)
     {
-      var valid = false;
-
-      tiles.forEach(function (tile)
-      {
-        if (tile.row === row && tile.column === column)
-          valid = true;
+      return _.findWhere(tiles, {
+        row: row + ''
+      , column: column + ''
       });
-
-      return valid;
     }
   });
 
