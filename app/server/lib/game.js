@@ -60,13 +60,20 @@
       return this;
     }
 
+  , emit: function (key, message)
+    {
+      this.server.emit(key, message);
+
+      return this;
+    }
+
   , start: function ()
     {
       this.playing = this.players[0];
 
-      this.server.emit('ready');
-
-      return this.setStatuses(this.setTurnStatus.bind(this));
+      return this
+        .emit('ready')
+        .setStatuses(this.setTurnStatus.bind(this));
     }
 
   , addPlayer: function (socket)
