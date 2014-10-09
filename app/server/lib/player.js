@@ -9,6 +9,7 @@
         this.socket = options.socket;
         this.game = options.game;
         this.id = options.id;
+        this.tiles = [];
 
         this.init();
       };
@@ -22,24 +23,43 @@
 
   , addListeners: function ()
     {
-      var socket = this.socket;
-
-      socket.on('select', this.select.bind(this));
+      this.socket
+        .on('select', this.select.bind(this))
+        .on('setName', this.setName.bind(this));
 
       return this;
     }
 
   , setPlayerId: function ()
     {
-      this.socket.emit('setPlayerId', this.id);
+      return this.emit('setPlayerId', this.id);
+    }
+
+  , emit: function (key, message)
+    {
+      this.socket.emit(key, message);
+
+      return this;
+    }
+
+  , broadcast: function (key, message)
+    {
+      this.socket.broadcast.emit(key, message);
+
+      return this;
+    }
+
+  , setName: function (name)
+    {
+      this.name = name;
+
+      return this;
     }
 
   , select: function (tile)
     {
-      this.game.selectTile({
-        player: this
-      , tile: tile
-      });
+      this.tiles.push(tile);
+      this.game.selectTile(tile);
 
       return this;
     }

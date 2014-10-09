@@ -8,6 +8,10 @@
 
     , Game = function Game (options)
       {
+        var size = this.size = options.size;
+
+        this.maxTiles = Math.pow(size, 2);
+
         this.server = options.server;
 
         this.init();
@@ -33,12 +37,45 @@
     {
       if (!this.isFull())
         this.addPlayer(socket);
-      // Handle Error
+      // TODO Handle Error
+
+      return this;
     }
 
   , isFull: function ()
     {
       return this.players.length >= 2;
+    }
+
+  , emit: function (key, message)
+    {
+      this.server.emit(key, message);
+
+      return this;
+    }
+
+  , setStatus: function (player)
+    {
+      player.emit('setStatus', this.playing === player ?
+        'Your turn ' + player.name :
+        this.playing.name + '\'s turn'
+      );
+
+      return this;
+    }
+
+  , setStatuses: function ()
+    {
+      this.players.forEach(this.setStatus.bind(this));
+
+      return this;
+    }
+
+  , start: function ()
+    {
+      this.playing = this.players[0];
+
+      return this.emit('ready').setStatuses();
     }
 
   , addPlayer: function (socket)
@@ -54,23 +91,136 @@
       );
 
       if (this.isFull())
-        this.server.emit('ready');
+        this.start();
 
       return this;
     }
 
-  , selectTile: function (options)
+  , togglePlayer: function ()
     {
-      var tile = options.tile
-        , player = options.player;
+      var players = this.players
+        , index = players.indexOf(this.playing) + 1;
 
-      player.socket.broadcast.emit('select', {
-        row: tile.row
-      , column: tile.column
-      , player: player.id
-      });
+      this.playing = players[
+        index >= players.length ? 0 : index
+      ];
+
+      return this
+        .emit('togglePlayer', this.playing.id)
+        .setStatuses();
+    }
+
+  , selectTile: function (tile)
+    {
+      this.playing.broadcast('select', tile);
+
+      if (this.isGameOver())
+        console.log('Game Over');
+
+      else
+        this.togglePlayer();
 
       return this;
+    }
+
+    // Game Logic
+  ,	isGameOver: function ()
+    {
+      var winner = _.find(this.players, this.hasPlayerWon.bind(this));
+
+      return winner || this.isTie();
+    }
+
+  , countTiles: function (memo, player)
+    {
+      return memo + player.tiles.length;
+    }
+
+  , isTie: function ()
+    {
+      console.log(_.reduce(this.players, this.countTiles.bind(this), 0));
+
+      return _.reduce(this.players, this.countTiles.bind(this), 0) === this.maxTiles;
+    }
+
+  ,	hasPlayerWon: function (player)
+    {
+      var tiles = player.tiles;
+
+      return tiles.length >= this.size && (
+        this.hasRow(tiles) || this.hasColumn(tiles) ||
+        this.hasLeftDiagonal(tiles) || this.hasRightDiagonal(tiles)
+      );
+    }
+
+  ,	hasRow: function (tiles)
+    {
+      return this.hasStraight(tiles, 'row');
+    }
+
+  ,	hasColumn: function (tiles)
+    {
+      return this.hasStraight(tiles, 'column');
+    }
+
+  ,	hasLeftDiagonal: function (tiles)
+    {
+      return this.hasDiagonal(tiles);
+    }
+
+  ,	hasRightDiagonal: function (tiles)
+    {
+      return this.hasDiagonal(tiles, true);
+    }
+
+  ,	hasStraight: function (tiles, data)
+    {
+      var size = this.size
+        ,	valid = false
+        ,	grouped = {}
+        ,	attr = null;
+
+      tiles.forEach(function (tile)
+      {
+        grouped[tile[data]] = ++grouped[tile[data]] || 1;
+      });
+
+      for (attr in grouped)
+        valid = valid || grouped[attr] === size;
+
+      return valid;
+    }
+
+  ,	hasDiagonal: function (tiles, inverse)
+    {
+      var size = this.size
+        ,	valid = true
+        ,	i = 0;
+
+      // while (i++ < size && valid)
+
+      if (inverse)
+        for (i = 0; i < size && valid; i++)
+          valid = this.hasTile(tiles, i, size - i - 1);
+
+      else
+        for (i = 0; i < size && valid; i++)
+          valid = this.hasTile(tiles, i, i);
+
+      return valid;
+    }
+
+  ,	hasTile: function (tiles, row, column)
+    {
+      var valid = false;
+
+      tiles.forEach(function (tile)
+      {
+        if (tile.row === row && tile.column === column)
+          valid = true;
+      });
+
+      return valid;
     }
   });
 

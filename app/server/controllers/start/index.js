@@ -29,6 +29,7 @@
 
       matches[id] = new Game({
         server: io.of('/' + id)
+      , size: 3
       });
 
       res.redirect('/play/' + id);

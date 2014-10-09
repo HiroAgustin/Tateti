@@ -18,5 +18,5 @@
   "trailing": true,
   "smarttabs": true,
   "laxcomma": true,
-  "predef": ["io"]
+  "predef": ["io", "utils"]
 }

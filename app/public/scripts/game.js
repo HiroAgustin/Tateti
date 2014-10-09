@@ -1,4 +1,4 @@
-(function (win, doc, undefined)
+;(function (win, doc, undefined)
 {
 	'use strict';
 
@@ -10,7 +10,7 @@
 
 				this.size = options.size;
 
-				return this.mapDom().addListeners();
+				return this.mapDom().setName().addListeners();
 			}
 
 		,	getGameId: function ()
@@ -18,51 +18,70 @@
 				return location.pathname.split('/')[2];
 			}
 
-		,	$: function (selector)
-			{
-				return doc.querySelectorAll(selector);
-			}
-
-		,	forEach: function (list, iterator)
-			{
-				return Array.prototype.forEach.call(list, iterator);
-			}
-
 		,	mapDom: function ()
 			{
-				this.board = this.$('#js-board')[0];
-				this.status = this.$('#js-status')[0];
-				this.message = this.$('#js-message')[0];
+				this.$name = utils.$('#js-name')[0];
+				this.$board = utils.$('#js-board')[0];
+				this.$status = utils.$('#js-status')[0];
+				this.$message = utils.$('#js-message')[0];
 
 				return this;
 			}
 
 		,	addListeners: function ()
 			{
-				this.board.addEventListener('click', this.clickHandler.bind(this));
+				utils.on('click', this.$board, this.clickHandler.bind(this));
 
 				this.socket
 					.on('ready', this.ready.bind(this))
 					.on('select', this.select.bind(this))
-					.on('setPlayerId', this.setPlayerId.bind(this));
+					.on('setStatus', this.setStatus.bind(this))
+					.on('setPlayerId', this.setPlayerId.bind(this))
+					.on('togglePlayer', this.togglePlayer.bind(this));
+
+				return this;
+			}
+
+		,	setName: function ()
+			{
+				this.emit('setName', this.$name.innerHTML);
+
+				return this;
+			}
+
+		,	emit: function (key, message)
+			{
+				this.socket.emit(key, message);
 
 				return this;
 			}
 
 		,	clickHandler: function (e)
 			{
-				var id = this.id
-					,	target = e.target
+				var target = e.target
 					,	data = target.dataset;
 
+				// TODO Game is over
 				if (this.isMyTurn && !this.isSelected(target))
 				{
 					this.select({
-						player: id
+						player: this.id
 					,	row: data.row
 					,	column: data.column
 					});
 				}
+
+				return this;
+			}
+
+		,	clearMessage: function ()
+			{
+				var $message = this.$message;
+
+				while ($message.firstChild)
+					$message.removeChild($message.firstChild);
+
+				return this;
 			}
 
 		,	ready: function ()
@@ -71,25 +90,16 @@
 
 				this.isMyTurn = id === 1;
 
-				return this.clearMessage().updateStatus().generateBoard();
-			}
-
-		,	clearMessage: function ()
-			{
-				var message = this.message;
-
-				while (message.firstChild)
-					message.removeChild(message.firstChild);
-
-				return this;
+				return this.clearMessage().generateBoard();
 			}
 
 		,	generateBoard: function ()
 			{
 				var size = this.size
 					,	element = null
-					,	i = 0
-					,	j = 0;
+					,	i = 0, j = 0;
+
+				// TODO optimizable, do not append on iterations.
 
 				for (i = 0; i < size; i++)
 				{
@@ -102,7 +112,7 @@
 						element.dataset.row = i;
 						element.dataset.column = j;
 
-						this.board.appendChild(element);
+						this.$board.appendChild(element);
 					}
 				}
 
@@ -121,157 +131,37 @@
 				return element.classList.contains('selected');
 			}
 
-		,	select: function (options)
+		,	selectTile: function (tile)
 			{
-				var id = this.id
-					,	row = options.row
-					,	column = options.column
-					,	player = options.player
-					,	element = this.$('[data-row="' + row + '"][data-column="' + column + '"]')[0];
+				var selector = '[data-row="' + tile.row + '"][data-column="' + tile.column + '"]'
+					,	element = utils.$(selector, this.$board)[0];
 
-				element.classList.add('selected', 'tile-' + player);
-
-				// Tell the other guy I selected
-				if (player === id)
-					this.socket.emit('select', {
-						row: row
-					,	column: column
-					});
-
-				if (!this.isGameOver())
-					this.togglePlayer();
-
-				else if (this.winner === id)
-					this.celebrate();
-
-				else
-					this.setStatus('You lose!');
+				element.classList.add('selected', 'tile-' + tile.player);
 
 				return this;
 			}
 
-		,	togglePlayer: function ()
+		,	select: function (tile)
 			{
-				this.isMyTurn = !this.isMyTurn;
+				this.selectTile(tile);
 
-				return this.updateStatus();
-			}
-
-		,	updateStatus: function ()
-			{
-				this.setStatus(this.isMyTurn ? 'Your turn.' : '');
+				// Tell the server I selected a tile
+				if (tile.player === this.id)
+					this.emit('select', tile);
 
 				return this;
 			}
 
-		,	isGameOver: function ()
+		,	togglePlayer: function (id)
 			{
-				if (this.hasPlayerWon(1))
-					return (this.winner = 1);
+				this.isMyTurn = this.id === id;
 
-				if (this.hasPlayerWon(2))
-					return (this.winner = 2);
-
-				if (!this.$(':not(.selected)').length)
-					return true;
-
-				return false;
-			}
-
-		,	hasPlayerWon: function (id)
-			{
-				this.playerTiles = this.board.getElementsByClassName('tile-' + id);
-
-				return this.playerTiles.length >= this.size && (
-					this.hasRow() || this.hasColumn() ||
-					this.hasLeftDiagonal() || this.hasRightDiagonal()
-				);
-			}
-
-		,	hasRow: function ()
-			{
-				return this.hasStraight('row');
-			}
-
-		,	hasColumn: function ()
-			{
-				return this.hasStraight('column');
-			}
-
-		,	hasLeftDiagonal: function ()
-			{
-				return this.hasDiagonal();
-			}
-
-		,	hasRightDiagonal: function ()
-			{
-				return this.hasDiagonal(true);
-			}
-
-		,	hasStraight: function (data)
-			{
-				var size = this.size
-					,	valid = false
-					,	grouped = {}
-					,	attr = null;
-
-				this.forEach(this.playerTiles, function (element)
-				{
-					grouped[element.dataset[data]] = ++grouped[element.dataset[data]] || 1;
-				});
-
-				for (attr in grouped)
-					valid = valid || grouped[attr] === size;
-
-				return valid;
-			}
-
-		,	hasDiagonal: function (inverse)
-			{
-				var size = this.size
-					,	valid = true
-					,	i = 0;
-
-				if (inverse)
-					for (i = 0; i < size; i++)
-						valid = valid && this.hasTile(i, size - i - 1);
-
-				else
-					for (i = 0; i < size; i++)
-						valid = valid && this.hasTile(i, i);
-
-				return valid;
-			}
-
-		,	hasTile: function (row, column)
-			{
-				var valid = false;
-
-				row = row.toString();
-				column = column.toString();
-
-				this.forEach(this.playerTiles, function (element)
-				{
-					if (element.dataset.row === row && element.dataset.column === column)
-						valid = true;
-				});
-
-				return valid;
+				return this;
 			}
 
 		,	setStatus: function (text)
 			{
-				this.status.innerHTML = text;
-
-				return this;
-			}
-
-		,	celebrate: function ()
-			{
-				if (this.winner)
-					this.setStatus('Congrats Player <b class="player-' + this.winner + '">' + this.winner + ' ☺</b>');
-				else
-					this.setStatus('It\'s a tie <b>☹</b>');
+				this.$status.innerHTML = text;
 
 				return this;
 			}
@@ -281,4 +171,4 @@
 		size: 3
 	});
 
-})(window, document);
+}(window, document));

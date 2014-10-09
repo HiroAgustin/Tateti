@@ -1,7 +1,8 @@
 <% include ../head %>
 
-<h2 id="js-status" class="text-center">Waiting for oponent</h2>
-
+<p id="js-status" class="h2 text-center">
+  Hey <b id="js-name"><%= name %></b>! <br>
+</p>
 <p id="js-message" class="text-center">
   Send the following code to your oponent: <b><%= id %></b> <br>
   <small>(or just share your url)</small>
@@ -16,5 +17,6 @@
 <!-- endbuild -->
 
 <!-- build:js scripts/main.js -->
+<script src="/scripts/utils.js"></script>
 <script src="/scripts/game.js"></script>
 <!-- endbuild -->
