@@ -1,27 +1,21 @@
-(function ()
+;(function (_, Player)
 {
   'use strict';
 
-  var _ = require('underscore')
+  var Game = function Game (options)
+  {
+    this.size = options.size;
+    this.server = options.server;
 
-    , Player = require('./player')
-
-    , Game = function Game (options)
-      {
-        var size = this.size = options.size;
-
-        this.maxTiles = Math.pow(size, 2);
-
-        this.server = options.server;
-
-        this.init();
-      };
+    this.init();
+  };
 
   _.extend(Game.prototype, {
 
     init: function ()
     {
       this.players = [];
+      this.maxTiles = Math.pow(this.size, 2);
 
       return this.addListeners();
     }
@@ -47,13 +41,6 @@
       return this.players.length >= 2;
     }
 
-  , emit: function (key, message)
-    {
-      this.server.emit(key, message);
-
-      return this;
-    }
-
   , setTurnStatus: function (player)
     {
       var playing = this.playing;
@@ -77,7 +64,9 @@
     {
       this.playing = this.players[0];
 
-      return this.emit('ready').setStatuses(this.setTurnStatus.bind(this));
+      this.server.emit('ready');
+
+      return this.setStatuses(this.setTurnStatus.bind(this));
     }
 
   , addPlayer: function (socket)
@@ -240,4 +229,4 @@
 
   module.exports = Game;
 
-}());
+}(require('underscore'), require('./player')));
