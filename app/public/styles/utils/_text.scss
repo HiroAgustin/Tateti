@@ -1,9 +1,32 @@
+@import "../config/colors";
+
 html {
+  color: $black;
   font-size: 18px;
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
+h1, h1 {
+  color: $black;
+  display: block;
+  font-family: 'Shadows Into Light', cursive;
+  font-size: 3.5em;
+  font-style: italic;
+  font-weight: normal;
+  margin: 0;
+  padding: 0.2em;
+}
+
+h2, .h2 {
+  display: block;
+  font-family: 'Shadows Into Light', cursive;
+  font-size: 1.5em;
+  font-weight: normal;
+  margin: 0.8em 0;
+}
+
+
 a {
+  font-family: 'Shadows Into Light', cursive;
   text-decoration: none;
 }
 
