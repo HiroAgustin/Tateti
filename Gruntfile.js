@@ -225,7 +225,7 @@ module.exports = function (grunt)
   ,	watch: {
 
       compass: {
-      files: ['<%= config.app %>/public/styles/{,*/}*.{scss,sass}']
+        files: ['<%= config.app %>/public/styles/{,*/}*.{scss,sass}']
       ,	tasks: ['compass', 'autoprefixer']
       }
 
