@@ -58,7 +58,7 @@ module.exports = function (grunt)
       target: {
         // Point to the files that should be updated when
         // you run `grunt wiredep`
-      src: ['<%= config.app %>/server/views/{,*/}*.ejs']
+        src: ['<%= config.app %>/server/views/{,*/}*.ejs']
       , exclude: ['<%= config.app %>/public/bower_components/colors']
       , ignorePath: '../../public'
       , overrides: {
