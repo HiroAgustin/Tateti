@@ -59,7 +59,10 @@ module.exports = function (grunt)
         // Point to the files that should be updated when
         // you run `grunt wiredep`
         src: ['<%= config.app %>/server/views/{,*/}*.ejs']
-      , exclude: ['<%= config.app %>/public/bower_components/colors']
+      , exclude: [
+          '<%= config.app %>/public/bower_components/colors'
+        , '<%= config.app %>/public/bower_components/suit'
+        ]
       , ignorePath: '../../public'
       , overrides: {
           'socket.io-client': {
