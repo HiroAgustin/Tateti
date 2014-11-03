@@ -35,6 +35,7 @@
 				this.socket
 					.on('ready', this.ready.bind(this))
 					.on('select', this.select.bind(this))
+					.on('gameOver', this.gameOver.bind(this))
 					.on('setStatus', this.setStatus.bind(this))
 					.on('setPlayerId', this.setPlayerId.bind(this))
 					.on('togglePlayer', this.togglePlayer.bind(this));
@@ -90,7 +91,28 @@
 
 				this.isMyTurn = id === 1;
 
-				return this.clearMessage().generateBoard();
+				return this.clearMessage().clearBoard().generateBoard();
+			}
+
+		,	rematch: function ()
+			{
+				return this.ready();
+			}
+
+		,	gameOver: function ()
+			{
+				// this.$board.appendChild();
+				return this;
+			}
+
+		,	clearBoard: function ()
+			{
+				var board = this.$board;
+
+				while (board.firstChild)
+					board.removeChild(board.firstChild);
+
+				return this;
 			}
 
 		,	generateBoard: function ()
@@ -100,9 +122,7 @@
 					,	i = 0, j = 0;
 
 				// TODO optimizable, do not append on iterations.
-
 				for (i = 0; i < size; i++)
-				{
 					for (j = 0; j < size; j++)
 					{
 						element = doc.createElement('div');
@@ -114,7 +134,6 @@
 
 						this.$board.appendChild(element);
 					}
-				}
 
 				return this;
 			}

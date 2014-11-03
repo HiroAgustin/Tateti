@@ -129,8 +129,10 @@
       this.playing.broadcast('select', tile);
 
       if (this.isGameOver())
+      {
         this.setStatuses(this.setEndStatus.bind(this));
-
+        this.emit('gameOver');
+      }
       else
         this.togglePlayer();
 
