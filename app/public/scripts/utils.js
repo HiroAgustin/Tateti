@@ -36,9 +36,7 @@
 
   ,	listen: function listen (selector, events)
     {
-      var evnt = '';
-
-      for (evnt in events)
+      for (var evnt in events)
         utils.on(evnt, selector, events[evnt]);
     }
   };

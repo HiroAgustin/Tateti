@@ -1,192 +1,202 @@
-;(function (win, doc, undefined)
+;(function (win, doc)
 {
 	'use strict';
 
-	var game = {
+	function Game (options)
+	{
+		this.size = options.size;
 
-			init: function (options)
+		this.init();
+	}
+
+	Game.prototype = {
+
+		init: function ()
+		{
+			this.socket = io('/' + this.getGameId());
+
+			return this
+				.mapDom()
+				.setName()
+				.addListeners();
+		}
+
+	,	getGameId: function ()
+		{
+			return location.pathname.split('/')[2];
+		}
+
+	,	mapDom: function ()
+		{
+			this.$name = utils.$('#js-name')[0];
+			this.$board = utils.$('#js-board')[0];
+			this.$status = utils.$('#js-status')[0];
+			this.$message = utils.$('#js-message')[0];
+
+			return this;
+		}
+
+	,	addListeners: function ()
+		{
+			utils.on('click', this.$board, this.clickHandler.bind(this));
+
+			this.socket
+				.on('ready', this.ready.bind(this))
+				.on('select', this.select.bind(this))
+				.on('gameOver', this.gameOver.bind(this))
+				.on('setStatus', this.setStatus.bind(this))
+				.on('setPlayerId', this.setPlayerId.bind(this))
+				.on('togglePlayer', this.togglePlayer.bind(this));
+
+			return this;
+		}
+
+	,	setName: function ()
+		{
+			this.emit('setName', this.$name.innerHTML);
+
+			return this;
+		}
+
+	,	emit: function (key, message)
+		{
+			this.socket.emit(key, message);
+
+			return this;
+		}
+
+	,	clickHandler: function (e)
+		{
+			var target = e.target
+				,	data = target.dataset;
+
+			// TODO Game is over
+			if (this.isMyTurn && !this.isSelected(target))
 			{
-				this.socket = io('/' + this.getGameId());
-
-				this.size = options.size;
-
-				return this.mapDom().setName().addListeners();
+				this.select({
+					player: this.id
+				,	row: data.row
+				,	column: data.column
+				});
 			}
 
-		,	getGameId: function ()
-			{
-				return location.pathname.split('/')[2];
-			}
+			return this;
+		}
 
-		,	mapDom: function ()
-			{
-				this.$name = utils.$('#js-name')[0];
-				this.$board = utils.$('#js-board')[0];
-				this.$status = utils.$('#js-status')[0];
-				this.$message = utils.$('#js-message')[0];
+	,	clearMessage: function ()
+		{
+			var $message = this.$message;
 
-				return this;
-			}
+			while ($message.firstChild)
+				$message.removeChild($message.firstChild);
 
-		,	addListeners: function ()
-			{
-				utils.on('click', this.$board, this.clickHandler.bind(this));
+			return this;
+		}
 
-				this.socket
-					.on('ready', this.ready.bind(this))
-					.on('select', this.select.bind(this))
-					.on('gameOver', this.gameOver.bind(this))
-					.on('setStatus', this.setStatus.bind(this))
-					.on('setPlayerId', this.setPlayerId.bind(this))
-					.on('togglePlayer', this.togglePlayer.bind(this));
+	,	ready: function ()
+		{
+			var id = this.id;
 
-				return this;
-			}
+			this.isMyTurn = id === 1;
 
-		,	setName: function ()
-			{
-				this.emit('setName', this.$name.innerHTML);
+			return this.clearMessage().clearBoard().generateBoard();
+		}
 
-				return this;
-			}
+	,	rematch: function ()
+		{
+			return this.ready();
+		}
 
-		,	emit: function (key, message)
-			{
-				this.socket.emit(key, message);
+	,	gameOver: function ()
+		{
+			// this.$board.appendChild();
+			return this;
+		}
 
-				return this;
-			}
+	,	clearBoard: function ()
+		{
+			var board = this.$board;
 
-		,	clickHandler: function (e)
-			{
-				var target = e.target
-					,	data = target.dataset;
+			while (board.firstChild)
+				board.removeChild(board.firstChild);
 
-				// TODO Game is over
-				if (this.isMyTurn && !this.isSelected(target))
+			return this;
+		}
+
+	,	generateBoard: function ()
+		{
+			var size = this.size
+				,	element = null
+				,	i = 0, j = 0
+				,	fragment = doc.createDocumentFragment();
+
+			for (i = 0; i < size; i++)
+				for (j = 0; j < size; j++)
 				{
-					this.select({
-						player: this.id
-					,	row: data.row
-					,	column: data.column
-					});
+					element = doc.createElement('div');
+
+					element.classList.add('tile');
+
+					element.dataset.row = i;
+					element.dataset.column = j;
+
+					fragment.appendChild(element);
 				}
 
-				return this;
-			}
+			this.$board.appendChild(fragment);
 
-		,	clearMessage: function ()
-			{
-				var $message = this.$message;
+			return this;
+		}
 
-				while ($message.firstChild)
-					$message.removeChild($message.firstChild);
+	,	setPlayerId: function (id)
+		{
+			this.id = id;
 
-				return this;
-			}
+			return this;
+		}
 
-		,	ready: function ()
-			{
-				var id = this.id;
+	,	isSelected: function (element)
+		{
+			return element.classList.contains('selected');
+		}
 
-				this.isMyTurn = id === 1;
+	,	selectTile: function (tile)
+		{
+			var selector = '[data-row="' + tile.row + '"][data-column="' + tile.column + '"]'
+				,	element = utils.$(selector, this.$board)[0];
 
-				return this.clearMessage().clearBoard().generateBoard();
-			}
+			element.classList.add('selected', 'tile-' + tile.player);
 
-		,	rematch: function ()
-			{
-				return this.ready();
-			}
+			return this;
+		}
 
-		,	gameOver: function ()
-			{
-				// this.$board.appendChild();
-				return this;
-			}
+	,	select: function (tile)
+		{
+			this.selectTile(tile);
 
-		,	clearBoard: function ()
-			{
-				var board = this.$board;
+			// Tell the server I selected a tile
+			if (tile.player === this.id)
+				this.emit('select', tile);
 
-				while (board.firstChild)
-					board.removeChild(board.firstChild);
+			return this;
+		}
 
-				return this;
-			}
+	,	togglePlayer: function (id)
+		{
+			this.isMyTurn = this.id === id;
 
-		,	generateBoard: function ()
-			{
-				var size = this.size
-					,	element = null
-					,	i = 0, j = 0;
+			return this;
+		}
 
-				// TODO optimizable, do not append on iterations.
-				for (i = 0; i < size; i++)
-					for (j = 0; j < size; j++)
-					{
-						element = doc.createElement('div');
+	,	setStatus: function (text)
+		{
+			this.$status.innerHTML = text;
 
-						element.classList.add('tile');
+			return this;
+		}
+	};
 
-						element.dataset.row = i;
-						element.dataset.column = j;
-
-						this.$board.appendChild(element);
-					}
-
-				return this;
-			}
-
-		,	setPlayerId: function (id)
-			{
-				this.id = id;
-
-				return this;
-			}
-
-		,	isSelected: function (element)
-			{
-				return element.classList.contains('selected');
-			}
-
-		,	selectTile: function (tile)
-			{
-				var selector = '[data-row="' + tile.row + '"][data-column="' + tile.column + '"]'
-					,	element = utils.$(selector, this.$board)[0];
-
-				element.classList.add('selected', 'tile-' + tile.player);
-
-				return this;
-			}
-
-		,	select: function (tile)
-			{
-				this.selectTile(tile);
-
-				// Tell the server I selected a tile
-				if (tile.player === this.id)
-					this.emit('select', tile);
-
-				return this;
-			}
-
-		,	togglePlayer: function (id)
-			{
-				this.isMyTurn = this.id === id;
-
-				return this;
-			}
-
-		,	setStatus: function (text)
-			{
-				this.$status.innerHTML = text;
-
-				return this;
-			}
-		};
-
-	game.init({
+	win.game = new Game({
 		size: 3
 	});
 
