@@ -1,14 +1,17 @@
 <% include ../head %>
 
-<p id="js-status" class="h2 text-center">
-  Hey <b id="js-name"><%= name %></b>! <br>
-</p>
-<p id="js-message" class="text-center">
-  Send the following code to your oponent: <b><%= id %></b> <br>
-  <small>(or just share your url)</small>
-</p>
+<main class="u-Flex u-Flex-1 u-Flex--Column Play">
+  <p id="js-status" class="h2">
+    Hey <b id="js-name"><%= name %></b>! <br>
+  </p>
+  
+  <p id="js-message" class="u-textCenter">
+    Send the following code to your oponent: <b><%= id %></b> <br>
+    <small>(or just share your url)</small>
+  </p>
 
-<div id="js-board" class="board"></div>
+  <div id="js-board" class="board"></div>
+</main>
 
 <!-- build:js /scripts/vendor.js -->
 <!-- bower:js -->

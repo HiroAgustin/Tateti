@@ -1,34 +1,50 @@
-@import "../config/colors";
+@import "config";
 
 html {
-  color: $black;
-  font-size: 18px;
+  color: $text-color;
+  font-size: $base-font-size;
+  line-height: $base-line-height;
 }
 
 h1, .h1 {
-  color: $black;
-  display: block;
-  font-family: 'Shadows Into Light', cursive;
   font-size: 3.5em;
-  font-style: italic;
+  font-family: Shadows Into Light, cursive;
   font-weight: normal;
-  margin: 0;
+  line-height: $base-line-height;
+  margin: 0.5em 0;
+  text-align: center;
 }
 
 h2, .h2 {
-  display: block;
-  font-family: 'Shadows Into Light', cursive;
   font-size: 1.5em;
+  font-family: Shadows Into Light, cursive;
   font-weight: normal;
-  margin: 0.8em 0;
+  line-height: $base-line-height;
+  margin: 0.5em 0;
+  text-align: center;
 }
-
 
 a {
-  font-family: 'Shadows Into Light', cursive;
+  color: $link-color;
   text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: $link-color-hover;
+    outline: none;
+  }
 }
 
-.text-center {
+p:empty {
+  display: none;
+}
+
+.u-Hulk {
+  font-size: 2.5em;
+  font-family: Shadows Into Light, cursive;
+  line-height: $base-line-height;
+}
+
+.u-textCenter {
   text-align: center;
 }

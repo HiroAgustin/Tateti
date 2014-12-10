@@ -1,12 +1,15 @@
+@import "config";
+
 html {
   box-sizing: border-box;
   height: 100%;
 }
 
-*, *:before, *:after {
+*, *::before, *::after {
   box-sizing: inherit;
 }
 
 body {
+  background: $background-color;
   min-height: 100%;
 }

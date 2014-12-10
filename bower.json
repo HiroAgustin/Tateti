@@ -9,8 +9,6 @@
   "dependencies": {
     "socket.io-client": "~1.0.6",
     "normalize.css": "~3.0.2",
-    "colors": "~2.0.0",
-    "griddle": "~0.3.0",
-    "suit": "~0.6.0"
+    "colors": "~2.0.0"
   }
 }
