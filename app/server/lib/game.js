@@ -2,7 +2,7 @@
 {
   'use strict';
 
-  var Game = function Game (options)
+  var Game = module.exports = function (options)
   {
     this.size = options.size;
     this.server = options.server;
@@ -31,7 +31,7 @@
     {
       if (!this.isFull())
         this.addPlayer(socket);
-      // TODO Handle Error
+      // TODO Handle Errors
 
       return this;
     }
@@ -46,8 +46,7 @@
       var playing = this.playing;
 
       return playing === player ?
-        'Your turn ' + player.name :
-        playing.name + '\'s turn';
+        'Your turn ' + player.name : playing.name + '\'s turn';
     }
 
   , setStatuses: function (callback)
@@ -110,8 +109,8 @@
 
   , setEndStatus: function (player)
     {
-      var winner = this.winner
-        , message = '';
+      var message = ''
+        , winner = this.winner;
 
       if (winner)
         message = winner === player ?
@@ -235,7 +234,5 @@
       });
     }
   });
-
-  module.exports = Game;
 
 }(require('underscore'), require('./player')));

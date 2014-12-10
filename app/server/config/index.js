@@ -1,19 +1,13 @@
-(function ()
+(function (path, ejs, express, favicon, bodyParser, compression, errorHandler)
 {
 	'use strict';
 
-	var path = require('path')
-		,	express = require('express')
-		,	favicon = require('serve-favicon')
-		,	bodyParser = require('body-parser')
-		,	compression = require('compression')
-		,	errorHandler = require('errorhandler')
-		,	root = path.normalize(__dirname + '/../..');
+	var root = path.normalize(__dirname + '/../..');
 
 	module.exports = function (app)
 	{
 		app.set('view engine', 'ejs');
-		app.engine('html', require('ejs').renderFile);
+		app.engine('html', ejs.renderFile);
 		app.set('views', root + '/server/views');
 
 		app.use(compression());
@@ -31,4 +25,5 @@
 
 		app.use(errorHandler());
 	};
-}());
+
+}(require('path'), require('ejs'), require('express'), require('serve-favicon'), require('body-parser'), require('compression'), require('errorhandler')));

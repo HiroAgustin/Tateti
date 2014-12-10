@@ -1,13 +1,12 @@
-(function ()
+(function (shortId, socketIO)
 {
   'use strict';
 
-  var shortId = require('shortid')
-    , Game = require(__dirname + '/../../lib/game');
+  var Game = require(__dirname + '/../../lib/game');
 
   module.exports = function (app)
   {
-    var io = require('socket.io')(app.server);
+    var io = socketIO(app.server);
 
     app.matches = {};
 
@@ -20,9 +19,7 @@
       session.flow = '/start';
 
       if (!session.name)
-      {
         return res.redirect('/name');
-      }
 
       while (~id.indexOf('-') || matches[id])
         id = shortId.generate();
@@ -36,4 +33,4 @@
     });
   };
 
-}());
+}(require('shortid'), require('socket.io')));

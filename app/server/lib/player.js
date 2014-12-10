@@ -1,18 +1,16 @@
-(function ()
+(function (_)
 {
   'use strict';
 
-  var _ = require('underscore')
+  var Player = module.exports = function Player (options)
+  {
+    this.socket = options.socket;
+    this.game = options.game;
+    this.id = options.id;
+    this.tiles = [];
 
-    , Player = function Player (options)
-      {
-        this.socket = options.socket;
-        this.game = options.game;
-        this.id = options.id;
-        this.tiles = [];
-
-        this.init();
-      };
+    this.init();
+  };
 
   _.extend(Player.prototype, {
 
@@ -65,6 +63,4 @@
     }
   });
 
-  module.exports = Player;
-
-}());
+}(require('underscore')));

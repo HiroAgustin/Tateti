@@ -33,6 +33,7 @@
 
       if (session.name)
         res.render('pages/join');
+
       else
         res.redirect('/name');
     });
