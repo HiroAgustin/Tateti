@@ -1,6 +1,8 @@
+@import "utils/flex";
+
 .container {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
+  @extend .u-Flex;
+  @extend .u-Flex-1;
+  @extend .u-Flex--Column;
+  @extend .u-Flex--Justify-Center;
 }

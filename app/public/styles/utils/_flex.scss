@@ -2,18 +2,14 @@
   display: flex;
 }
 
+.u-Flex-1 {
+  flex: 1;
+}
+
 .u-Flex--Column {
   flex-direction: column;
 }
 
-.u-Flex--Align-Center {
-  align-items: center;
-}
-
 .u-Flex--Justify-Center {
   justify-content: center;
-}
-
-.u-Flex-1 {
-  flex: 1;
 }
