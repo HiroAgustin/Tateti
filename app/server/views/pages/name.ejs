@@ -1,11 +1,11 @@
 <% include ../head %>
 
-<main class="u-Flex u-Flex-1 u-Flex--Column Name">
+<main class="container Name">
   <h2>Type your name</h2>
 
   <form class="u-Flex u-marginHa" action="/name" method="POST">
     <input class="form-control" type="text" name="name" value="<%= name || '' %>" placeholder="Austin" autofocus>
-    <input class="btn" type="submit" value="Go"/>
+    <input class="btn" type="submit" value="Play"/>
   </form>
 </main>
 
