@@ -39,16 +39,16 @@ p:empty {
   display: none;
 }
 
-.u-Hulk {
-  font-size: 2.5em;
-  font-family: Shadows Into Light, cursive;
-  line-height: $base-line-height;
-}
-
 .u-textCenter {
   text-align: center;
 }
 
 .u-italic {
   font-style: italic;
+}
+
+.u-Hulk {
+  font-size: 2.5em;
+  font-family: Shadows Into Light, cursive;
+  line-height: $base-line-height;
 }
