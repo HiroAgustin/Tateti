@@ -13,3 +13,10 @@
 .u-Flex--Justify-Center {
   justify-content: center;
 }
+
+body, main {
+  @extend .u-Flex;
+  @extend .u-Flex-1;
+  @extend .u-Flex--Column;
+  @extend .u-Flex--Justify-Center;
+}

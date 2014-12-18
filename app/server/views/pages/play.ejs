@@ -1,6 +1,6 @@
 <% include ../head %>
 
-<main class="container Play">
+<main class="Play">
   <p id="js-status" class="h2">
     Hey <b id="js-name"><%= name %></b>! <br>
   </p>
@@ -14,12 +14,3 @@
 </main>
 
 <% include ../footer %>
-
-<!-- build:js /scripts/vendor.js -->
-<script src="/bower_components/socket.io-client/socket.io.js"></script>
-<!-- endbuild -->
-
-<!-- build:js /scripts/main.js -->
-<script src="/scripts/utils.js"></script>
-<script src="/scripts/game.js"></script>
-<!-- endbuild -->

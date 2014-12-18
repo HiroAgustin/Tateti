@@ -1,6 +1,4 @@
 .Home {
-  flex-direction: column;
-
   @include breakpoint(30em) {
     flex-direction: row;
   }
