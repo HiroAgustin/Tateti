@@ -1,24 +1,24 @@
-@import "colors/sass/variables";
+@import "colors/src/_variables.css";
 
 // Cool
-//$aqua
-//$blue
-//$navy
-//$teal
-//$green
-//$olive
-//$lime
+$aqua: var(--aqua);
+$blue: var(--blue);
+$navy: var(--navy);
+$teal: var(--teal);
+$green: var(--green);
+$olive: var(--olive);
+$lime: var(--lime);
 
 // Warm
-//$yellow
-//$orange
-//$red
-//$fuchsia
-//$purple
-//$maroon
+$yellow: var(--yellow);
+$orange: var(--orange);
+$red: var(--red);
+$fuchsia: var(--fuchsia);
+$purple: var(--purple);
+$maroon: var(--maroon);
 
 // Gray Scale
-//$white
-//$silver
-//$gray
-//$black
+$white: var(--white);
+$silver: var(--silver);
+$gray: var(--gray);
+$black: var(--black);
